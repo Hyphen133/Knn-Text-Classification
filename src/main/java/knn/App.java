@@ -14,21 +14,8 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 
 public class App {
-    public static void main(String[] args) throws Exception {
-//        ExtractReuters extractReuters = new ExtractReuters();
-        URL res = App.class.getClassLoader().getResource("reuters/README.txt");
-        File file = Paths.get(res.toURI()).toFile();
-        String absolutePath = file.getAbsolutePath();
-        System.out.println(absolutePath.replace("/README.txt", ""));
-        System.out.println(absolutePath.replace("/reuters/README.txt", "/output"));
+    public static void main(String[] args){
 
-        Path reutersPath = Paths.get(absolutePath.replace("/README.txt", ""));
-        Path outputPath = Paths.get(absolutePath.replace("/reuters/README.txt", "/output"));
-
-        ExtractReuters extractReuters = new ExtractReuters(reutersPath, outputPath);
-        extractReuters.extract();
-//
-//        Thread.sleep(1000000000);
     }
 }
 
