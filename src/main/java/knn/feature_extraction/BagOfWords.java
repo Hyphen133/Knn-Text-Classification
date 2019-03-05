@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.Map;
 
 public class BagOfWords implements FeatureExtraction {
+
+    Map<String, Boolean> volcabulary = new HashMap<>();
+
     @Override
     public Map<String, Integer>[] extractFeatures(String[][] wordsInTexts) {
 
@@ -45,4 +48,10 @@ public class BagOfWords implements FeatureExtraction {
         return featureTextVectors;
 
     }
+
+    @Override
+    public Map<String, Boolean> getVolcabulary() {
+        return volcabulary;
+    }
+
 }

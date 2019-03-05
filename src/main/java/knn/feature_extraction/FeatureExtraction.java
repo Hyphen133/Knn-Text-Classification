@@ -10,4 +10,6 @@ public interface FeatureExtraction {
     *   TODO -> 3rd dim int or double??
      */
     public Map<String,Integer>[] extractFeatures(String[][] wordsInTexts);
+
+    public Map<String, Boolean> getVolcabulary();
 }
