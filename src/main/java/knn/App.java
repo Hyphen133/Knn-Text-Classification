@@ -4,6 +4,7 @@ import knn.loading.PlacesTagsLoader;
 import knn.loading.ReutersLoader;
 import knn.preprocessing.LeaveOnlyCharactersAndSpacesRule;
 import knn.preprocessing.PreprocessingRule;
+import knn.preprocessing.WordSplitter;
 import org.apache.lucene.benchmark.utils.ExtractReuters;
 import org.w3c.dom.Document;
 
@@ -60,6 +61,16 @@ public class App {
 
         System.out.println(flattenedTexts.length);
         System.out.println(flattenedTags.length);
+
+        System.out.println(flattenedTexts[0]);
+        System.out.println(flattenedTags[0]);
+        System.out.println(flattenedTexts[1]);
+        System.out.println(flattenedTags[1]);
+
+        String[][] splittedTexts = WordSplitter.splitAllTextsBySpaces(flattenedTexts);
+        System.out.println(Arrays.toString(splittedTexts[0]));
+        System.out.println(Arrays.toString(splittedTexts[1]));
+
     }
 
 }
