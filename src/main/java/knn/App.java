@@ -48,12 +48,18 @@ public class App {
             }
         }
 
-        for (ArrayList<String> text : processedTexts) {
-            System.out.println(text.size());
-            for (String s : text) {
-                System.out.println(s);
-            }
-        }
+//        for (ArrayList<String> text : processedTexts) {
+//            System.out.println(text.size());
+//            for (String s : text) {
+//                System.out.println(s);
+//            }
+//        }
+
+        String[] flattenedTexts = Utils.flatten(processedTexts, String.class);
+        String[] flattenedTags = Utils.flatten(tags, String.class);
+
+        System.out.println(flattenedTexts.length);
+        System.out.println(flattenedTags.length);
     }
 
 }

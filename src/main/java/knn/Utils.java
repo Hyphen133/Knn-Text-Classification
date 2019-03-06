@@ -1,5 +1,7 @@
 package knn;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.stream.IntStream;
 
@@ -50,4 +52,23 @@ public class Utils {
 
     }
 
+    public static <T> T[] flatten(ArrayList<T>[] arr, Class<T> tClass){
+        int size = 0;
+        for (ArrayList<T> ts : arr) {
+            size += ts.size();
+        }
+
+        T[] out = (T[]) Array.newInstance(tClass, size);
+
+        int index =0;
+
+        for (ArrayList<T> ts : arr) {
+            for (T t : ts) {
+                out[index] = t;
+                index++;
+            }
+        }
+
+        return out;
+    }
 }
