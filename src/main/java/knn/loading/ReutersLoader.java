@@ -24,7 +24,6 @@ public class ReutersLoader {
         ExtractReuters extractReuters = new ExtractReuters(reutersPath, outputPath);
         extractReuters.extract();
 
-        //TODO ->  add reading places tags
         return outputPath;
     }
 }

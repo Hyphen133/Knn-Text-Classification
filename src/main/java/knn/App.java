@@ -14,6 +14,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Map;
+
+import static knn.loading.PlacesTagsLoader.getAllPlacesMap;
 
 public class App {
     public static void main(String[] args){
@@ -22,6 +25,15 @@ public class App {
         for (ArrayList<String> tag : tags) {
             System.out.println(tag.size());
         }
+
+        Map<String,Integer> placesMap = PlacesTagsLoader.getAllPlacesMap();
+
+        for (String s : placesMap.keySet()) {
+            System.out.println(s);
+        }
+
+        System.out.println(placesMap.keySet().size());
     }
+
 }
 
