@@ -41,4 +41,5 @@ public class KNN implements Classification {
         outClasses[maxClassIndex] = 1;
         return outClasses;
     }
+
 }

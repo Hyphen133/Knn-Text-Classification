@@ -1,6 +1,7 @@
 package knn;
 
 import knn.loading.PlacesTagsLoader;
+import knn.loading.ReutersLoader;
 import org.apache.lucene.benchmark.utils.ExtractReuters;
 import org.w3c.dom.Document;
 
@@ -28,11 +29,16 @@ public class App {
 
         Map<String,Integer> placesMap = PlacesTagsLoader.getAllPlacesMap();
 
-        for (String s : placesMap.keySet()) {
-            System.out.println(s);
-        }
+//        for (String s : placesMap.keySet()) {
+//            System.out.println(s);
+//        }
 
         System.out.println(placesMap.keySet().size());
+
+        ArrayList<String>[] texts = ReutersLoader.load();
+        for (ArrayList<String> text : texts) {
+            System.out.println(text.size());
+        }
     }
 
 }
