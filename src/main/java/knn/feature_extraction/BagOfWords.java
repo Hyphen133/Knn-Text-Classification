@@ -43,8 +43,6 @@ public class BagOfWords implements FeatureExtraction {
             featureTextVectors[i] = wordOccurenceMap;
         }
 
-
-        //TODO -> return volcabulary as well
         return featureTextVectors;
 
     }

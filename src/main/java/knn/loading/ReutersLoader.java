@@ -12,7 +12,7 @@ import java.nio.file.Paths;
 
 public class ReutersLoader {
     public static Path load() throws IOException, URISyntaxException {
-        URL res = App.class.getClassLoader().getResource("reuters/README.txt");
+        URL res = ReutersLoader.class.getClassLoader().getResource("reuters/README.txt");
         File file = Paths.get(res.toURI()).toFile();
         String absolutePath = file.getAbsolutePath();
         System.out.println(absolutePath.replace("/README.txt", ""));
@@ -23,6 +23,8 @@ public class ReutersLoader {
 
         ExtractReuters extractReuters = new ExtractReuters(reutersPath, outputPath);
         extractReuters.extract();
+
+        //TODO ->  add reading places tags
         return outputPath;
     }
 }
