@@ -31,7 +31,7 @@ public class PlacesTagsLoader {
 
     }
 
-    public static ArrayList<String> loadPlacesTagsFromFile(String filepath) {
+    private static ArrayList<String> loadPlacesTagsFromFile(String filepath) {
         ArrayList<String> placeTags = new ArrayList<>();
 
         System.out.println(filepath);

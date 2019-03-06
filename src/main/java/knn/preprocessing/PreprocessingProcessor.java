@@ -3,10 +3,10 @@ package knn.preprocessing;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProprocessingProcessor {
+public class PreprocessingProcessor {
     private List<PreprocessingRule> rules;
 
-    public ProprocessingProcessor() {
+    public PreprocessingProcessor() {
         rules = new ArrayList<PreprocessingRule>();
     }
 

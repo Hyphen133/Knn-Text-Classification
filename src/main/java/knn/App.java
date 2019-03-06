@@ -2,6 +2,8 @@ package knn;
 
 import knn.loading.PlacesTagsLoader;
 import knn.loading.ReutersLoader;
+import knn.preprocessing.LeaveOnlyCharactersAndSpacesRule;
+import knn.preprocessing.PreprocessingRule;
 import org.apache.lucene.benchmark.utils.ExtractReuters;
 import org.w3c.dom.Document;
 
@@ -29,15 +31,28 @@ public class App {
 
         Map<String,Integer> placesMap = PlacesTagsLoader.getAllPlacesMap();
 
-//        for (String s : placesMap.keySet()) {
-//            System.out.println(s);
-//        }
+        for (String s : placesMap.keySet()) {
+            System.out.println(s);
+        }
 
         System.out.println(placesMap.keySet().size());
 
         ArrayList<String>[] texts = ReutersLoader.load();
-        for (ArrayList<String> text : texts) {
+
+        ArrayList<String>[] processedTexts = new ArrayList[texts.length];
+        PreprocessingRule rule = new LeaveOnlyCharactersAndSpacesRule();
+        for (int i = 0; i < texts.length; i++) {
+            processedTexts[i] = new ArrayList<>();
+            for (String text : texts[i]) {
+                processedTexts[i].add(rule.applyTo(text));
+            }
+        }
+
+        for (ArrayList<String> text : processedTexts) {
             System.out.println(text.size());
+            for (String s : text) {
+                System.out.println(s);
+            }
         }
     }
 
