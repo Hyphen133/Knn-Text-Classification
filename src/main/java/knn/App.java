@@ -1,5 +1,7 @@
 package knn;
 
+import knn.feature_extraction.BagOfWords;
+import knn.feature_extraction.FeatureExtraction;
 import knn.loading.PlacesTagsLoader;
 import knn.loading.ReutersLoader;
 import knn.preprocessing.LeaveOnlyCharactersAndSpacesRule;
@@ -24,17 +26,22 @@ import static knn.loading.PlacesTagsLoader.getAllPlacesMap;
 
 public class App {
     public static void main(String[] args){
+
+        long startTime = System.currentTimeMillis();
+
+
+
         ArrayList<String>[] tags = PlacesTagsLoader.loadPlacesTagsFromReutersDirectory();
 
-        for (ArrayList<String> tag : tags) {
-            System.out.println(tag.size());
-        }
+//        for (ArrayList<String> tag : tags) {
+//            System.out.println(tag.size());
+//        }
 
         Map<String,Integer> placesMap = PlacesTagsLoader.getAllPlacesMap();
 
-        for (String s : placesMap.keySet()) {
-            System.out.println(s);
-        }
+//        for (String s : placesMap.keySet()) {
+//            System.out.println(s);
+//        }
 
         System.out.println(placesMap.keySet().size());
 
@@ -71,6 +78,13 @@ public class App {
         System.out.println(Arrays.toString(splittedTexts[0]));
         System.out.println(Arrays.toString(splittedTexts[1]));
 
+        FeatureExtraction featureExtraction = new BagOfWords();
+
+        featureExtraction.extractFeatures(splittedTexts);
+
+
+        long estimatedTime = System.currentTimeMillis() - startTime;
+        System.out.println(estimatedTime/1000 + "s ");
     }
 
 }

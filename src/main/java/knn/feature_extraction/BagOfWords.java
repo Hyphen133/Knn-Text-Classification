@@ -31,8 +31,8 @@ public class BagOfWords implements FeatureExtraction {
                 volcabulary.put(currentWord, true);
 
                 //Add count
-                if(wordOccurenceMap.containsKey("")){
-                    int currentCount = wordOccurenceMap.get(textWords[j]);
+                if(wordOccurenceMap.containsKey(currentWord)){
+                    int currentCount = wordOccurenceMap.get(currentWord);
                     wordOccurenceMap.put(currentWord, currentCount+1 );
                 }else{
                     wordOccurenceMap.put(currentWord,1);
