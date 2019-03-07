@@ -1,6 +1,8 @@
 package knn;
 
 import knn.classification.ClassProcessing;
+import knn.classification.Classification;
+import knn.classification.KNN;
 import knn.feature_extraction.BagOfWords;
 import knn.feature_extraction.FeatureExtraction;
 import knn.loading.PlacesTagsLoader;
@@ -94,7 +96,6 @@ public class App {
 //        for (Map<String, Integer> wordVector : wordVectors) {
 //            System.out.println(wordVector.keySet().size());
 //        }
-
 
 
 

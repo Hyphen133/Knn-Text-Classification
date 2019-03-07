@@ -17,5 +17,10 @@ public class ClassProcessing {
         return tagVectors;
     }
 
+    public static double[][] convertFeaturesToVectors(Map<String,Integer>[] features, Map<String,Boolean> volcabulary){
+        //TODO
+        return new double[0][0];
+    }
+
 
 }

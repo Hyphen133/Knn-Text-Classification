@@ -1,7 +1,9 @@
 package knn.feature_extraction;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public interface FeatureExtraction {
     /*
@@ -11,5 +13,5 @@ public interface FeatureExtraction {
      */
     public Map<String,Integer>[] extractFeatures(String[][] wordsInTexts);
 
-    public Map<String, Boolean> getVolcabulary();
+    public List<String> getOrderedVolcabulary();
 }

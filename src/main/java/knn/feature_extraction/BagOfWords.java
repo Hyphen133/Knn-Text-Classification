@@ -1,13 +1,10 @@
 package knn.feature_extraction;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class BagOfWords implements FeatureExtraction {
 
-    Map<String, Boolean> volcabulary = new HashMap<>();
+    List<String> volcabulary = new ArrayList<>();
 
     @Override
     public Map<String, Integer>[] extractFeatures(String[][] wordsInTexts) {
@@ -15,7 +12,7 @@ public class BagOfWords implements FeatureExtraction {
         Map<String, Integer>[] featureTextVectors = new HashMap[wordsInTexts.length];
 
         //Mapping word -> onehot index
-        Map<String, Boolean> volcabulary = new HashMap<>();
+        Set<String> volcabularySet = new TreeSet<>();
 
 
         for (int i = 0; i < wordsInTexts.length; i++) {
@@ -28,7 +25,7 @@ public class BagOfWords implements FeatureExtraction {
                 String currentWord = textWords[j];
 
                 //Add to volcabulary
-                volcabulary.put(currentWord, true);
+                volcabularySet.add(currentWord);
 
                 //Add count
                 if(wordOccurenceMap.containsKey(currentWord)){
@@ -43,13 +40,18 @@ public class BagOfWords implements FeatureExtraction {
             featureTextVectors[i] = wordOccurenceMap;
         }
 
+        volcabulary = new ArrayList<>();
+        volcabulary.addAll(volcabularySet);
+        Collections.sort(volcabulary);
+
         return featureTextVectors;
 
     }
 
     @Override
-    public Map<String, Boolean> getVolcabulary() {
+    public List<String> getOrderedVolcabulary() {
         return volcabulary;
     }
+
 
 }
