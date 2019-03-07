@@ -31,7 +31,7 @@ public class KNN implements ClassificationAlgorithm {
         //Calculate class counts in this k first elements
         int numberOfClasses = baseVectorsClasses[0].length;
         int[] classCounts = new int[numberOfClasses];
-        for (int i = 0; i < classCounts.length; i++) {
+        for (int i = 0; i < k; i++) {
             classCounts = Utils.elementwiseSameLengthVectorAdd(classCounts,baseVectorsClasses[topIndexes[i]]);
         }
 

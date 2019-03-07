@@ -1,6 +1,8 @@
 package knn;
 
 import knn.classification.ClassProcessing;
+import knn.classification.ClassificationAlgorithm;
+import knn.classification.KNN;
 import knn.feature_extraction.BagOfWords;
 import knn.feature_extraction.FeatureExtraction;
 import knn.loading.PlacesTagsLoader;
@@ -8,6 +10,7 @@ import knn.loading.ReutersLoader;
 import knn.preprocessing.LeaveOnlyCharactersAndSpacesRule;
 import knn.preprocessing.PreprocessingRule;
 import knn.preprocessing.WordSplitter;
+import knn.similarity.EuclideanDistance;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -86,9 +89,16 @@ public class App {
 //        }
 
 
-        //Slice first 1000 elements (for 21000 out of bounds)
-        wordVectors = Arrays.copyOfRange(wordVectors, 0, 1000);
-        tagVectors = Arrays.copyOfRange(tagVectors, 0, 1000);
+        //Slice 20 words for test and first 1000 elements (for 21000 out of bounds)
+        int trainSize = 1000;
+        int testSize = 20;
+
+        Map<String, Integer>[] testWordVectors = Arrays.copyOfRange(wordVectors, trainSize, trainSize+testSize);
+        int[][] testTagVectors = Arrays.copyOfRange(tagVectors, trainSize, trainSize + testSize);
+        wordVectors = Arrays.copyOfRange(wordVectors, 0, trainSize);
+        tagVectors = Arrays.copyOfRange(tagVectors, 0, trainSize);
+
+        double[][] testFeatureVectors = ClassProcessing.convertFeaturesToVectors(testWordVectors, volcabulary);
 
 
 
@@ -98,6 +108,12 @@ public class App {
             System.out.println(Arrays.toString(featureVector));
         }
 
+
+        ClassificationAlgorithm classificationAlgorithm = new KNN(featureVectors,tagVectors, new EuclideanDistance(), 3);
+
+        int[] classificationResult = classificationAlgorithm.classify(testFeatureVectors[0]);
+        System.out.println(Arrays.toString(classificationResult));
+        System.out.println(Arrays.toString(testTagVectors[0]));
 
         long estimatedTime = System.currentTimeMillis() - startTime;
         System.out.println(estimatedTime/1000 + "s ");
