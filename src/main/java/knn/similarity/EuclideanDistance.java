@@ -2,7 +2,7 @@ package knn.similarity;
 
 public class EuclideanDistance implements SimilarityMeasure {
     @Override
-    public double calculateSimilarity(double[] v1, double[] v2) {
+    public double calculateSimilarity(short[] v1, short[] v2) {
         if (v1.length != v2.length) {
             throw new IllegalArgumentException("Vectors have different length");
         }

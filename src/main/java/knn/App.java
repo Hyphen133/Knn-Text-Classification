@@ -90,20 +90,20 @@ public class App {
 
 
         //Slice 20 words for test and first 1000 elements (for 21000 out of bounds)
-        int trainSize = 1500;
-        int testSize = 20;
+        int trainSize = 6000;
+        int testSize = 200;
 
         Map<String, Integer>[] testWordVectors = Arrays.copyOfRange(wordVectors, trainSize, trainSize+testSize);
         int[][] testTagVectors = Arrays.copyOfRange(tagVectors, trainSize, trainSize + testSize);
         wordVectors = Arrays.copyOfRange(wordVectors, 0, trainSize);
         tagVectors = Arrays.copyOfRange(tagVectors, 0, trainSize);
 
-        double[][] testFeatureVectors = ClassProcessing.convertFeaturesToVectors(testWordVectors, volcabulary);
+        short[][] testFeatureVectors = ClassProcessing.convertFeaturesToVectors(testWordVectors, volcabulary);
 
 
 
 
-        double[][] featureVectors = ClassProcessing.convertFeaturesToVectors(wordVectors, volcabulary);
+        short[][] featureVectors = ClassProcessing.convertFeaturesToVectors(wordVectors, volcabulary);
 //        for (double[] featureVector : featureVectors) {
 //            System.out.println(Arrays.toString(featureVector));
 //        }
@@ -111,6 +111,8 @@ public class App {
 
         ClassificationAlgorithm classificationAlgorithm = new KNN(featureVectors,tagVectors, new EuclideanDistance(), 3);
 
+
+        System.out.println("Testing");
 
         //Testing
         int correctTests = 0;

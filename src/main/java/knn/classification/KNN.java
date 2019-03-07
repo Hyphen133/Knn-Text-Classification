@@ -5,19 +5,19 @@ import knn.similarity.SimilarityMeasure;
 
 public class KNN implements ClassificationAlgorithm {
 
-    double[][] baseVectors;
+    short[][] baseVectors;
     int[][] baseVectorsClasses;
     SimilarityMeasure similarityMeasure;
     int k;
 
-    public KNN(double[][] baseVectors, int[][] baseVectorsClasses, SimilarityMeasure similarityMeasure, int k) {
+    public KNN(short[][] baseVectors, int[][] baseVectorsClasses, SimilarityMeasure similarityMeasure, int k) {
         this.baseVectors = baseVectors;
         this.baseVectorsClasses = baseVectorsClasses;
         this.similarityMeasure = similarityMeasure;
         this.k = k;
     }
 
-    public int[] classify(double[] vector) {
+    public int[] classify(short[] vector) {
         // Calculate similarities for each of base vector
         double[] similarities = new double[baseVectors.length];
 
