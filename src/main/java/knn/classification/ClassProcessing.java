@@ -33,6 +33,18 @@ public class ClassProcessing {
         return featureVectors;
     }
 
+    public static boolean compareTags(int[] tag1, int[] tag2){
+        if(tag1.length != tag2.length){
+            throw  new IllegalArgumentException("Tags vectors should have same length");
+        }
+
+        for (int i = 0; i < tag1.length; i++) {
+            if(tag1[i] != tag2[i]){
+                return false;
+            }
+        }
+        return true;
+    }
 
 
 }

@@ -90,7 +90,7 @@ public class App {
 
 
         //Slice 20 words for test and first 1000 elements (for 21000 out of bounds)
-        int trainSize = 1000;
+        int trainSize = 1500;
         int testSize = 20;
 
         Map<String, Integer>[] testWordVectors = Arrays.copyOfRange(wordVectors, trainSize, trainSize+testSize);
@@ -111,9 +111,17 @@ public class App {
 
         ClassificationAlgorithm classificationAlgorithm = new KNN(featureVectors,tagVectors, new EuclideanDistance(), 3);
 
-        int[] classificationResult = classificationAlgorithm.classify(testFeatureVectors[0]);
-        System.out.println(Arrays.toString(classificationResult));
-        System.out.println(Arrays.toString(testTagVectors[0]));
+
+        //Testing
+        int correctTests = 0;
+        for (int i = 0; i < testSize; i++) {
+            if(ClassProcessing.compareTags(testTagVectors[i], classificationAlgorithm.classify(testFeatureVectors[i]))){
+                correctTests++;
+            }
+        }
+
+        System.out.println("Accuracy: " + ((((double)correctTests)/testSize)*100) + "%");
+
 
         long estimatedTime = System.currentTimeMillis() - startTime;
         System.out.println(estimatedTime/1000 + "s ");
