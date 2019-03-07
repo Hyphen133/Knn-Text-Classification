@@ -1,6 +1,6 @@
 package knn.classification;
 
-public interface Classification {
+public interface ClassificationAlgorithm {
 
     /*
      *   Input - vector of features

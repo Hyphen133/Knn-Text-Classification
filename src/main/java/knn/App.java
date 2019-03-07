@@ -1,8 +1,6 @@
 package knn;
 
 import knn.classification.ClassProcessing;
-import knn.classification.Classification;
-import knn.classification.KNN;
 import knn.feature_extraction.BagOfWords;
 import knn.feature_extraction.FeatureExtraction;
 import knn.loading.PlacesTagsLoader;
@@ -10,22 +8,11 @@ import knn.loading.ReutersLoader;
 import knn.preprocessing.LeaveOnlyCharactersAndSpacesRule;
 import knn.preprocessing.PreprocessingRule;
 import knn.preprocessing.WordSplitter;
-import org.apache.lucene.benchmark.utils.ExtractReuters;
-import org.w3c.dom.Document;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
-
-import static knn.loading.PlacesTagsLoader.getAllPlacesMap;
 
 public class App {
     public static void main(String[] args){
@@ -83,21 +70,33 @@ public class App {
 
 
         int[][] tagVectors = ClassProcessing.convertTagsToVectorsWithSingleOne(flattenedTags,placesMap);
-        for (int[] tagVector : tagVectors) {
-            System.out.println(tagVector.length);
-            System.out.println(Arrays.toString(tagVector));
-        }
+//        for (int[] tagVector : tagVectors) {
+//            System.out.println(tagVector.length);
+//            System.out.println(Arrays.toString(tagVector));
+//        }
 
 
         FeatureExtraction featureExtraction = new BagOfWords();
 
         Map<String, Integer>[] wordVectors = featureExtraction.extractFeatures(splittedTexts);
+        List<String> volcabulary = featureExtraction.getOrderedVolcabulary();
 
 //        for (Map<String, Integer> wordVector : wordVectors) {
 //            System.out.println(wordVector.keySet().size());
 //        }
 
 
+        //Slice first 1000 elements (for 21000 out of bounds)
+        wordVectors = Arrays.copyOfRange(wordVectors, 0, 1000);
+        tagVectors = Arrays.copyOfRange(tagVectors, 0, 1000);
+
+
+
+
+        double[][] featureVectors = ClassProcessing.convertFeaturesToVectors(wordVectors, volcabulary);
+        for (double[] featureVector : featureVectors) {
+            System.out.println(Arrays.toString(featureVector));
+        }
 
 
         long estimatedTime = System.currentTimeMillis() - startTime;

@@ -3,7 +3,7 @@ package knn.classification;
 import knn.Utils;
 import knn.similarity.SimilarityMeasure;
 
-public class KNN implements Classification {
+public class KNN implements ClassificationAlgorithm {
 
     double[][] baseVectors;
     int[][] baseVectorsClasses;
