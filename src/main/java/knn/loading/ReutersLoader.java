@@ -23,8 +23,6 @@ public class ReutersLoader {
             e.printStackTrace();
         }
         String absolutePath = file.getAbsolutePath();
-        System.out.println(absolutePath.replace("/README.txt", ""));
-        System.out.println(absolutePath.replace("/reuters/README.txt", "/output"));
 
         Path reutersPath = Paths.get(absolutePath.replace("/README.txt", ""));
         Path outputPath = Paths.get(absolutePath.replace("/reuters/README.txt", "/output"));

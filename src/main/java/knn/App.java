@@ -36,7 +36,7 @@ public class App {
 //            System.out.println(s);
 //        }
 
-        System.out.println(placesMap.keySet().size());
+//        System.out.println(placesMap.keySet().size());
 
         ArrayList<String>[] texts = ReutersLoader.load();
 
@@ -59,17 +59,17 @@ public class App {
         String[] flattenedTexts = Utils.flatten(processedTexts, String.class);
         String[] flattenedTags = Utils.flatten(tags, String.class);
 
-        System.out.println(flattenedTexts.length);
-        System.out.println(flattenedTags.length);
-
-        System.out.println(flattenedTexts[0]);
-        System.out.println(flattenedTags[0]);
-        System.out.println(flattenedTexts[1]);
-        System.out.println(flattenedTags[1]);
-
+//        System.out.println(flattenedTexts.length);
+//        System.out.println(flattenedTags.length);
+//
+//        System.out.println(flattenedTexts[0]);
+//        System.out.println(flattenedTags[0]);
+//        System.out.println(flattenedTexts[1]);
+//        System.out.println(flattenedTags[1]);
+//
         String[][] splittedTexts = WordSplitter.splitAllTextsBySpaces(flattenedTexts);
-        System.out.println(Arrays.toString(splittedTexts[0]));
-        System.out.println(Arrays.toString(splittedTexts[1]));
+//        System.out.println(Arrays.toString(splittedTexts[0]));
+//        System.out.println(Arrays.toString(splittedTexts[1]));
 
 
         int[][] tagVectors = ClassProcessing.convertTagsToVectorsWithSingleOne(flattenedTags,placesMap);
@@ -104,9 +104,9 @@ public class App {
 
 
         double[][] featureVectors = ClassProcessing.convertFeaturesToVectors(wordVectors, volcabulary);
-        for (double[] featureVector : featureVectors) {
-            System.out.println(Arrays.toString(featureVector));
-        }
+//        for (double[] featureVector : featureVectors) {
+//            System.out.println(Arrays.toString(featureVector));
+//        }
 
 
         ClassificationAlgorithm classificationAlgorithm = new KNN(featureVectors,tagVectors, new EuclideanDistance(), 3);

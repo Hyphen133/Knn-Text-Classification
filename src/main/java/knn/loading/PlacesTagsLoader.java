@@ -34,7 +34,6 @@ public class PlacesTagsLoader {
     private static ArrayList<String> loadPlacesTagsFromFile(String filepath) {
         ArrayList<String> placeTags = new ArrayList<>();
 
-        System.out.println(filepath);
         URL res = ReutersLoader.class.getClassLoader().getResource(filepath);
         File file = null;
         try {
@@ -91,7 +90,6 @@ public class PlacesTagsLoader {
             //!! 0 is empty
             placesMap.put("empty",0);
             while ((line = br.readLine()) != null) {
-                System.out.println(line);
                 placesMap.put(line.trim(),i);       //There was a case where argentina contained space
                 i++;
             }

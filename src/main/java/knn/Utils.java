@@ -8,11 +8,6 @@ import java.util.stream.IntStream;
 import static java.util.Comparator.comparing;
 
 public class Utils {
-    public static double[] convertFeatureDictonaryToVector(Dictionary<String, Integer> featureDictonary) {
-
-        return null;
-    }
-
 
     public static String[] splitBySpace(String text) {
         return text.split(" ");
