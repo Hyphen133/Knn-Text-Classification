@@ -52,13 +52,13 @@ public class ReutersLoader {
 
             String basePath = dirPath + "/reut2-0" + index + ".sgm-";
 
-            int reutersLength = (i != REUTERS_SIZE-1) ? 1000 : 578;
+            int reutersLength = (i != REUTERS_SIZE - 1) ? 1000 : 578;
 
             ArrayList<String> groupTexts = new ArrayList<>();
 
             for (int j = 0; j < reutersLength; j++) {
                 String path = basePath + j + ".txt";
-                groupTexts.add(processTxtFile(path));
+                groupTexts.add(processTxtFile(path, false));
             }
 
             texts[i] = groupTexts;
@@ -67,15 +67,21 @@ public class ReutersLoader {
         return texts;
     }
 
-    private static String processTxtFile(String filepath) {
+    private static String processTxtFile(String filepath, boolean withTitle) {
         String text = "";
         try (BufferedReader br = new BufferedReader(new FileReader(filepath))) {
             String line;
             int i = 1;
             while ((line = br.readLine()) != null) {
-                if (i == 3 || i == 5) {           // 3rd line contains title, 5th line contains text
+                if (withTitle) {
+                    if (i == 3) {           // 3rd line contains title, 5th line contains text
+                        text += line + " ";
+                    }
+                }
+                if (i == 5) {           // 3rd line contains title, 5th line contains text
                     text += line + " ";
                 }
+
                 i++;
             }
         } catch (FileNotFoundException e) {

@@ -4,6 +4,7 @@ import knn.classification.ClassProcessing;
 import knn.classification.ClassificationAlgorithm;
 import knn.classification.KNN;
 import knn.feature_extraction.BagOfWords;
+import knn.feature_extraction.CapitalBagOfWords;
 import knn.feature_extraction.FeatureExtraction;
 import knn.loading.PlacesTagsLoader;
 import knn.loading.ReutersLoader;
@@ -79,7 +80,7 @@ public class App {
 //        }
 
 
-        FeatureExtraction featureExtraction = new BagOfWords();
+        FeatureExtraction featureExtraction = new CapitalBagOfWords();
 
         Map<String, Integer>[] wordVectors = featureExtraction.extractFeatures(splittedTexts);
         List<String> volcabulary = featureExtraction.getOrderedVolcabulary();
@@ -90,8 +91,8 @@ public class App {
 
 
         //Slice 20 words for test and first 1000 elements (for 21000 out of bounds)
-        int trainSize = 6000;
-        int testSize = 200;
+        int trainSize = 8000;
+        int testSize = 4000;
 
         Map<String, Integer>[] testWordVectors = Arrays.copyOfRange(wordVectors, trainSize, trainSize+testSize);
         int[][] testTagVectors = Arrays.copyOfRange(tagVectors, trainSize, trainSize + testSize);
@@ -117,6 +118,7 @@ public class App {
         //Testing
         int correctTests = 0;
         for (int i = 0; i < testSize; i++) {
+            System.out.println(i + "/" + testSize);
             if(ClassProcessing.compareTags(testTagVectors[i], classificationAlgorithm.classify(testFeatureVectors[i]))){
                 correctTests++;
             }
