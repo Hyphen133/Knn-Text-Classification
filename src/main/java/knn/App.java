@@ -1,5 +1,6 @@
 package knn;
 
+import knn.classification.ClassProcessing;
 import knn.feature_extraction.BagOfWords;
 import knn.feature_extraction.FeatureExtraction;
 import knn.loading.PlacesTagsLoader;
@@ -78,9 +79,24 @@ public class App {
         System.out.println(Arrays.toString(splittedTexts[0]));
         System.out.println(Arrays.toString(splittedTexts[1]));
 
+
+        int[][] tagVectors = ClassProcessing.convertTagsToVectorsWithSingleOne(flattenedTags,placesMap);
+        for (int[] tagVector : tagVectors) {
+            System.out.println(tagVector.length);
+            System.out.println(Arrays.toString(tagVector));
+        }
+
+
         FeatureExtraction featureExtraction = new BagOfWords();
 
-        featureExtraction.extractFeatures(splittedTexts);
+        Map<String, Integer>[] wordVectors = featureExtraction.extractFeatures(splittedTexts);
+
+//        for (Map<String, Integer> wordVector : wordVectors) {
+//            System.out.println(wordVector.keySet().size());
+//        }
+
+
+
 
 
         long estimatedTime = System.currentTimeMillis() - startTime;

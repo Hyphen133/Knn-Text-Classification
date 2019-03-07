@@ -92,7 +92,7 @@ public class PlacesTagsLoader {
             placesMap.put("empty",0);
             while ((line = br.readLine()) != null) {
                 System.out.println(line);
-                placesMap.put(line,i);
+                placesMap.put(line.trim(),i);       //There was a case where argentina contained space
                 i++;
             }
         } catch (FileNotFoundException e) {
