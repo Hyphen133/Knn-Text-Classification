@@ -26,7 +26,7 @@ public class KNN implements ClassificationAlgorithm {
         }
 
         //Get K first similarities
-        int[] topIndexes = Utils.topN(similarities,k);
+        int[] topIndexes = Utils.bottomN(similarities,k);
 
         //Calculate class counts in this k first elements
         int numberOfClasses = baseVectorsClasses[0].length;

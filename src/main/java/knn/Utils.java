@@ -13,10 +13,10 @@ public class Utils {
         return text.split(" ");
     }
 
-    public static int[] topN(final double[] input, final int n) {
+    public static int[] bottomN(final double[] input, final int n) {
         return IntStream.range(0, input.length)
                 .boxed()
-                .sorted(comparing(i -> -input[i]))
+                .sorted(comparing(i -> input[i]))
                 .mapToInt(i -> i)
                 .limit(n)
                 .toArray();
