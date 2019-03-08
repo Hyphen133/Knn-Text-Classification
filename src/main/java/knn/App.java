@@ -15,10 +15,7 @@ import knn.preprocessing.PreprocessingRule;
 import knn.preprocessing.WordSplitter;
 import knn.similarity.EuclideanDistance;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class App {
     public static void main(String[] args){
@@ -35,6 +32,8 @@ public class App {
 
         Map<String,Integer> placesMap = PlacesTagsLoader.getAllPlacesMap();
 
+
+
 //        for (String s : placesMap.keySet()) {
 //            System.out.println(s);
 //        }
@@ -42,6 +41,39 @@ public class App {
 //        System.out.println(placesMap.keySet().size());
 
         ArrayList<String>[] texts = ReutersLoader.load(true);
+
+
+        //Filtering
+        String[] chosenTags = { "west-germany", "usa", "france", "uk", "canada", "japan"};
+
+        placesMap = new HashMap<>();
+        for (int i = 0; i < chosenTags.length; i++) {
+            placesMap.put(chosenTags[i], i);
+        }
+
+        ArrayList<String>[] filteredTags = new ArrayList[tags.length];
+        ArrayList<String>[] filteredTexts = new ArrayList[texts.length];
+
+
+        for (int i = 0; i < texts.length; i++) {
+            filteredTags[i] = new ArrayList<>();
+            filteredTexts[i] = new ArrayList<>();
+
+            for (int j = 0; j < texts[i].size(); j++) {
+                String currentTag = tags[i].get(j);
+                String currentText = texts[i].get(j);
+                if(placesMap.containsKey(currentTag)){
+                    filteredTags[i].add(currentTag);
+                    filteredTexts[i].add(currentText);
+                }
+            }
+        }
+
+        tags = filteredTags;
+        texts = filteredTexts;
+
+
+
 
         ArrayList<String>[] processedTexts = new ArrayList[texts.length];
         PreprocessingRule rule = new LeaveOnlyCharactersAndSpacesRule();
@@ -96,8 +128,8 @@ public class App {
 
 
         //Slice 20 words for test and first 1000 elements (for 21000 out of bounds)
-        int trainSize = 1000;
-        int testSize = 400;
+        int trainSize = 6000;
+        int testSize = 4000;
 
         Map<String, Integer>[] testWordVectors = Arrays.copyOfRange(wordVectors, trainSize, trainSize+testSize);
         int[][] testTagVectors = Arrays.copyOfRange(tagVectors, trainSize, trainSize + testSize);
@@ -115,7 +147,7 @@ public class App {
 //        }
 
 
-        ClassificationAlgorithm classificationAlgorithm = new KNN(featureVectors,tagVectors, new EuclideanDistance(), 3);
+        ClassificationAlgorithm classificationAlgorithm = new KNN(featureVectors,tagVectors, new EuclideanDistance(), 12);
 
 
         System.out.println("Testing");
