@@ -102,6 +102,15 @@ public class PlacesTagsLoader {
         return placesMap;
     }
 
+    public static Map<String, Integer> getPlacesMapFromChosenTags(String[] chosenTags){
+
+        Map<String, Integer> placesMap = new HashMap<>();
+        for (int i = 0; i < chosenTags.length; i++) {
+            placesMap.put(chosenTags[i], i);
+        }
+
+        return placesMap;
+    }
 
 
 }

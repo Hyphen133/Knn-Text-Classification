@@ -1,5 +1,7 @@
 package knn.classification;
 
+import java.util.List;
+
 public interface ClassificationAlgorithm {
 
     /*
@@ -7,4 +9,5 @@ public interface ClassificationAlgorithm {
      *   Output - vector of class predictions for each of output classes
      */
     int[] classify(short[] vector);
+    List<ClassificationResult> classify(short[][] vectors);
 }

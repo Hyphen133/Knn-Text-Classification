@@ -3,6 +3,10 @@ package knn.classification;
 import knn.Utils;
 import knn.similarity.SimilarityMeasure;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.*;
+
 public class KNN implements ClassificationAlgorithm {
 
     short[][] baseVectors;
@@ -40,6 +44,37 @@ public class KNN implements ClassificationAlgorithm {
         int[] outClasses = new int[numberOfClasses];
         outClasses[maxClassIndex] = 1;
         return outClasses;
+    }
+
+    public List<ClassificationResult> classify(short[][] testFeatureVectors){
+        List<Callable<ClassificationResult>> tasks = new ArrayList<>();
+        for (int i = 0; i < testFeatureVectors.length; i++) {
+            int index = i;
+            short[] featuresVector = testFeatureVectors[i];
+            Callable<ClassificationResult> c = () -> new ClassificationResult(index, classify(featuresVector));
+            tasks.add(c);
+        }
+
+        ExecutorService exec = Executors.newCachedThreadPool();
+//        ExecutorService exec = Executors.newFixedThreadPool(4);
+
+        List<ClassificationResult> testResults = new ArrayList<>();
+
+        try {
+
+            List<Future<ClassificationResult>> results = exec.invokeAll(tasks);
+            for (Future<ClassificationResult> fr : results) {
+                testResults.add(fr.get());
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } finally {
+            exec.shutdown();
+        }
+
+        return testResults;
     }
 
 }
