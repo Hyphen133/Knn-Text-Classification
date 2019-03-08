@@ -13,6 +13,7 @@ import knn.loading.ReutersLoader;
 import knn.preprocessing.LeaveOnlyCharactersAndSpacesRule;
 import knn.preprocessing.PreprocessingRule;
 import knn.preprocessing.WordSplitter;
+import knn.similarity.CosineSimilarity;
 import knn.similarity.EuclideanDistance;
 
 import java.util.*;
@@ -114,8 +115,8 @@ public class App {
 //        }
 
 
-//        FeatureExtraction featureExtraction = new NonFrequentBagOfWords(MostFrequentWordsLoader.load());
-        FeatureExtraction featureExtraction = new BagOfWords();
+        FeatureExtraction featureExtraction = new NonFrequentBagOfWords(MostFrequentWordsLoader.load());
+//        FeatureExtraction featureExtraction = new CapitalBagOfWords();
 
         Map<String, Integer>[] wordVectors = featureExtraction.extractFeatures(splittedTexts);
 
@@ -128,8 +129,8 @@ public class App {
 
 
         //Slice 20 words for test and first 1000 elements (for 21000 out of bounds)
-        int trainSize = 6000;
-        int testSize = 4000;
+        int trainSize = 3000;
+        int testSize = 3000;
 
         Map<String, Integer>[] testWordVectors = Arrays.copyOfRange(wordVectors, trainSize, trainSize+testSize);
         int[][] testTagVectors = Arrays.copyOfRange(tagVectors, trainSize, trainSize + testSize);
@@ -142,12 +143,12 @@ public class App {
 
 
         short[][] featureVectors = ClassProcessing.convertFeaturesToVectors(wordVectors, volcabulary);
-//        for (double[] featureVector : featureVectors) {
+//        for (short[] featureVector : featureVectors) {
 //            System.out.println(Arrays.toString(featureVector));
 //        }
 
 
-        ClassificationAlgorithm classificationAlgorithm = new KNN(featureVectors,tagVectors, new EuclideanDistance(), 12);
+        ClassificationAlgorithm classificationAlgorithm = new KNN(featureVectors,tagVectors, new EuclideanDistance(), 5);
 
 
         System.out.println("Testing");

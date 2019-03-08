@@ -24,7 +24,9 @@ public class ClassProcessing {
             for (int j = 0; j < volcabulary.size(); j++) {
                 String currentWord = volcabulary.get(j);
                 if (features[i].containsKey(currentWord)) {
-                    featureVectors[i][j] = features[i].get(currentWord).shortValue();
+                    short count = features[i].get(currentWord).shortValue();
+                    featureVectors[i][j] = count;
+                }else{
                     featureVectors[i][j] = 0;
                 }
             }
