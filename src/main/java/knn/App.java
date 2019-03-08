@@ -149,7 +149,7 @@ public class App {
 //        }
 
 
-        ClassificationAlgorithm classificationAlgorithm = new KNN(featureVectors,tagVectors, new EuclideanDistance(), 5);
+        ClassificationAlgorithm classificationAlgorithm = new KNN(featureVectors,tagVectors, new CosineSimilarity(), 20);
 
 
         System.out.println("Testing");
