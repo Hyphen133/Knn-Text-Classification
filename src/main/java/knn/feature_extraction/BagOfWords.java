@@ -24,7 +24,7 @@ public class BagOfWords implements FeatureExtraction {
             for (int j = 0; j < textWords.length; j++) {
                 String currentWord = textWords[j];
 
-                //Add to volcabulary
+                //Add to vocabulary
                 volcabularySet.add(currentWord);
 
                 //Add count
@@ -49,7 +49,7 @@ public class BagOfWords implements FeatureExtraction {
     }
 
     @Override
-    public List<String> getOrderedVolcabulary() {
+    public List<String> getOrderedVocabulary() {
         return volcabulary;
     }
 

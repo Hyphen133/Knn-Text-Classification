@@ -13,5 +13,5 @@ public interface FeatureExtraction {
      */
     public Map<String,Integer>[] extractFeatures(String[][] wordsInTexts);
 
-    public List<String> getOrderedVolcabulary();
+    public List<String> getOrderedVocabulary();
 }

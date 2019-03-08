@@ -2,8 +2,13 @@ package knn.feature_extraction;
 
 import java.util.*;
 
-public class CapitalBagOfWords implements FeatureExtraction {
-    List<String> vocabulary = new ArrayList<>();
+public class NonFrequentBagOfWords implements FeatureExtraction {
+    Set<String> frequentWords;
+    List<String> vocabulary;
+
+    public NonFrequentBagOfWords(Set<String> frequentWords) {
+        this.frequentWords = frequentWords;
+    }
 
     @Override
     public Map<String, Integer>[] extractFeatures(String[][] wordsInTexts) {
@@ -26,16 +31,20 @@ public class CapitalBagOfWords implements FeatureExtraction {
                     if(Character.isUpperCase(currentWord.charAt(0)) ){
                         currentWord = currentWord.toLowerCase();            //!! Lowercasing
 
-                        //Add to vocabulary
-                        vocabularySet.add(currentWord);
 
-                        //Add count
-                        if(wordOccurenceMap.containsKey(currentWord)){
-                            int currentCount = wordOccurenceMap.get(currentWord);
-                            wordOccurenceMap.put(currentWord, currentCount+1 );
-                        }else{
-                            wordOccurenceMap.put(currentWord,1);
+                        if(!frequentWords.contains(currentWord)){   //Check if word is frequent
+                            //Add to vocabulary
+                            vocabularySet.add(currentWord);
+
+                            //Add count
+                            if(wordOccurenceMap.containsKey(currentWord)){
+                                int currentCount = wordOccurenceMap.get(currentWord);
+                                wordOccurenceMap.put(currentWord, currentCount+1 );
+                            }else{
+                                wordOccurenceMap.put(currentWord,1);
+                            }
                         }
+
                     }
                 }
 
@@ -47,7 +56,6 @@ public class CapitalBagOfWords implements FeatureExtraction {
 
         vocabulary = new ArrayList<>();
         vocabulary.addAll(vocabularySet);
-        Collections.sort(vocabulary);
 
         return featureTextVectors;
     }

@@ -38,7 +38,7 @@ public class ReutersLoader {
         return outputPath;
     }
 
-    public static ArrayList<String>[] load() {
+    public static ArrayList<String>[] load(boolean withTitle) {
         Path dirPath = processSgmToTxtFiles();
         ArrayList<String>[] texts = new ArrayList[REUTERS_SIZE];
 
@@ -58,7 +58,7 @@ public class ReutersLoader {
 
             for (int j = 0; j < reutersLength; j++) {
                 String path = basePath + j + ".txt";
-                groupTexts.add(processTxtFile(path, false));
+                groupTexts.add(processTxtFile(path, withTitle));
             }
 
             texts[i] = groupTexts;

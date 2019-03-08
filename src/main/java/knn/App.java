@@ -6,6 +6,8 @@ import knn.classification.KNN;
 import knn.feature_extraction.BagOfWords;
 import knn.feature_extraction.CapitalBagOfWords;
 import knn.feature_extraction.FeatureExtraction;
+import knn.feature_extraction.NonFrequentBagOfWords;
+import knn.loading.MostFrequentWordsLoader;
 import knn.loading.PlacesTagsLoader;
 import knn.loading.ReutersLoader;
 import knn.preprocessing.LeaveOnlyCharactersAndSpacesRule;
@@ -39,7 +41,7 @@ public class App {
 
 //        System.out.println(placesMap.keySet().size());
 
-        ArrayList<String>[] texts = ReutersLoader.load();
+        ArrayList<String>[] texts = ReutersLoader.load(true);
 
         ArrayList<String>[] processedTexts = new ArrayList[texts.length];
         PreprocessingRule rule = new LeaveOnlyCharactersAndSpacesRule();
@@ -80,10 +82,13 @@ public class App {
 //        }
 
 
-        FeatureExtraction featureExtraction = new CapitalBagOfWords();
+//        FeatureExtraction featureExtraction = new NonFrequentBagOfWords(MostFrequentWordsLoader.load());
+        FeatureExtraction featureExtraction = new BagOfWords();
 
         Map<String, Integer>[] wordVectors = featureExtraction.extractFeatures(splittedTexts);
-        List<String> volcabulary = featureExtraction.getOrderedVolcabulary();
+
+
+        List<String> volcabulary = featureExtraction.getOrderedVocabulary();
 
 //        for (Map<String, Integer> wordVector : wordVectors) {
 //            System.out.println(wordVector.keySet().size());
@@ -91,8 +96,8 @@ public class App {
 
 
         //Slice 20 words for test and first 1000 elements (for 21000 out of bounds)
-        int trainSize = 8000;
-        int testSize = 4000;
+        int trainSize = 1000;
+        int testSize = 400;
 
         Map<String, Integer>[] testWordVectors = Arrays.copyOfRange(wordVectors, trainSize, trainSize+testSize);
         int[][] testTagVectors = Arrays.copyOfRange(tagVectors, trainSize, trainSize + testSize);
