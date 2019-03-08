@@ -17,6 +17,7 @@ import knn.similarity.CosineSimilarity;
 import knn.similarity.EuclideanDistance;
 
 import java.util.*;
+import java.util.concurrent.*;
 
 public class App {
     public static void main(String[] args){
@@ -41,7 +42,7 @@ public class App {
 
 //        System.out.println(placesMap.keySet().size());
 
-        ArrayList<String>[] texts = ReutersLoader.load(true);
+        ArrayList<String>[] texts = ReutersLoader.load(false);
 
 
         //Filtering
@@ -129,8 +130,8 @@ public class App {
 
 
         //Slice 20 words for test and first 1000 elements (for 21000 out of bounds)
-        int trainSize = 3000;
-        int testSize = 3000;
+        int trainSize = 1200;
+        int testSize = 800;
 
         Map<String, Integer>[] testWordVectors = Arrays.copyOfRange(wordVectors, trainSize, trainSize+testSize);
         int[][] testTagVectors = Arrays.copyOfRange(tagVectors, trainSize, trainSize + testSize);
@@ -154,10 +155,61 @@ public class App {
         System.out.println("Testing");
 
         //Testing
-        int correctTests = 0;
+//        int correctTests = 0;
+//        for (int i = 0; i < testSize; i++) {
+//            System.out.println(i + "/" + testSize);
+//            if(ClassProcessing.compareTags(testTagVectors[i], classificationAlgorithm.classify(testFeatureVectors[i]))){
+//                correctTests++;
+//            }
+//        }
+
+        class ClassificationResult{
+            int index;
+            int[] classVector;
+
+            public ClassificationResult(int index, int[] classVector) {
+                this.index = index;
+                this.classVector = classVector;
+            }
+
+            public int getIndex() {
+                return index;
+            }
+
+            public int[] getClassVector() {
+                return classVector;
+            }
+        }
+
+        List<Callable<ClassificationResult>> tasks = new ArrayList<>();
         for (int i = 0; i < testSize; i++) {
-            System.out.println(i + "/" + testSize);
-            if(ClassProcessing.compareTags(testTagVectors[i], classificationAlgorithm.classify(testFeatureVectors[i]))){
+            int index = i;
+            short[] featuresVector = testFeatureVectors[i];
+            Callable<ClassificationResult> c = () -> new ClassificationResult(index,classificationAlgorithm.classify(featuresVector));
+            tasks.add(c);
+        }
+
+        ExecutorService exec = Executors.newCachedThreadPool();
+
+        List<ClassificationResult> testResults = new ArrayList<>();
+
+        try {
+
+            List<Future<ClassificationResult>> results = exec.invokeAll(tasks);
+            for (Future<ClassificationResult> fr : results) {
+                testResults.add(fr.get());
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } finally {
+            exec.shutdown();
+        }
+
+        int correctTests = 0;
+        for (ClassificationResult testResult : testResults) {
+            if(ClassProcessing.compareTags(testResult.getClassVector(), testTagVectors[testResult.getIndex()]) == true){
                 correctTests++;
             }
         }
@@ -170,4 +222,3 @@ public class App {
     }
 
 }
-
