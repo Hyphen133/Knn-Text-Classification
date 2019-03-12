@@ -1,8 +1,6 @@
 package knn;
 
 import knn.classification.*;
-import knn.feature_extraction.BagOfWords;
-import knn.feature_extraction.CapitalBagOfWords;
 import knn.feature_extraction.FeatureExtraction;
 import knn.feature_extraction.NonFrequentBagOfWords;
 import knn.loading.MostFrequentWordsLoader;
@@ -11,11 +9,9 @@ import knn.loading.ReutersLoader;
 import knn.preprocessing.LeaveOnlyCharactersAndSpacesRule;
 import knn.preprocessing.PreprocessingRule;
 import knn.preprocessing.WordSplitter;
-import knn.similarity.CosineSimilarity;
-import knn.similarity.EuclideanDistance;
+import knn.similarity.*;
 
 import java.util.*;
-import java.util.concurrent.*;
 
 public class App {
     public static void main(String[] args){
@@ -79,8 +75,8 @@ public class App {
 
 
         //------------------------- Train-Test Sets ----------------------------
-        int trainSize = 1200;
-        int testSize = 800;
+        int trainSize = 4000;
+        int testSize = 3000;
 
         Map<String, Integer>[] testWordVectors = Arrays.copyOfRange(wordVectors, trainSize, trainSize+testSize);
         int[][] testTagVectors = Arrays.copyOfRange(tagVectors, trainSize, trainSize + testSize);
@@ -90,7 +86,7 @@ public class App {
         short[][] testFeatureVectors = ClassProcessing.convertFeaturesToVectors(testWordVectors, volcabulary);
         short[][] featureVectors = ClassProcessing.convertFeaturesToVectors(wordVectors, volcabulary);
 
-        ClassificationAlgorithm classificationAlgorithm = new KNN(featureVectors,tagVectors, new EuclideanDistance(), 5);
+        ClassificationAlgorithm classificationAlgorithm = new KNN(featureVectors,tagVectors, new InversedEuclideanDistance(), 3);
 
 
         //----------------------- Testing -----------------------------

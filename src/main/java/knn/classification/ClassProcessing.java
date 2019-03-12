@@ -35,6 +35,39 @@ public class ClassProcessing {
         return featureVectors;
     }
 
+    public static short[][] convertFeaturesToReverseCountsVectors(Map<String, Integer>[] features, List<String> volcabulary) {
+
+        short[][] featureVectors = new short[features.length][volcabulary.size()];
+
+        short topCount = 0;
+
+        for (int i = 0; i < features.length; i++){
+            for (int j = 0; j < volcabulary.size(); j++) {
+                String currentWord = volcabulary.get(j);
+                if (features[i].containsKey(currentWord)) {
+                    short count = features[i].get(currentWord).shortValue();
+                    featureVectors[i][j] = count;
+
+                    if(topCount < count){
+                        topCount = count;
+                    }
+
+                }else{
+                    featureVectors[i][j] = 0;
+                }
+            }
+        }
+
+        for (int i = 0; i < featureVectors.length; i++) {
+            for (int j = 0; j < featureVectors[0].length; j++) {
+                featureVectors[i][j] = (short)(topCount - featureVectors[i][j]);
+            }
+        }
+
+        return featureVectors;
+    }
+
+
     public static boolean compareTags(int[] tag1, int[] tag2) {
         if (tag1.length != tag2.length) {
             throw new IllegalArgumentException("Tags vectors should have same length");
