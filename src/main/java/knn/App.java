@@ -2,6 +2,7 @@ package knn;
 
 import knn.classification.*;
 import knn.feature_extraction.FeatureExtraction;
+import knn.feature_extraction.InversedBagOfWords;
 import knn.feature_extraction.NonFrequentBagOfWords;
 import knn.loading.MostFrequentWordsLoader;
 import knn.loading.PlacesTagsLoader;
@@ -67,16 +68,16 @@ public class App {
 
 
         //----------------------- Feature extraction --------------------------
-        FeatureExtraction featureExtraction = new NonFrequentBagOfWords(MostFrequentWordsLoader.load());
-//        FeatureExtraction featureExtraction = new CapitalBagOfWords();
+//        FeatureExtraction featureExtraction = new NonFrequentBagOfWords(MostFrequentWordsLoader.load());
+        FeatureExtraction featureExtraction = new InversedBagOfWords();
 
         Map<String, Integer>[] wordVectors = featureExtraction.extractFeatures(splittedTexts);
         List<String> volcabulary = featureExtraction.getOrderedVocabulary();
 
 
         //------------------------- Train-Test Sets ----------------------------
-        int trainSize = 4000;
-        int testSize = 3000;
+        int trainSize = 1000;
+        int testSize = 600;
 
         Map<String, Integer>[] testWordVectors = Arrays.copyOfRange(wordVectors, trainSize, trainSize+testSize);
         int[][] testTagVectors = Arrays.copyOfRange(tagVectors, trainSize, trainSize + testSize);
@@ -86,7 +87,7 @@ public class App {
         short[][] testFeatureVectors = ClassProcessing.convertFeaturesToVectors(testWordVectors, volcabulary);
         short[][] featureVectors = ClassProcessing.convertFeaturesToVectors(wordVectors, volcabulary);
 
-        ClassificationAlgorithm classificationAlgorithm = new KNN(featureVectors,tagVectors, new InversedEuclideanDistance(), 3);
+        ClassificationAlgorithm classificationAlgorithm = new KNN(featureVectors,tagVectors, new EuclideanDistance(), 3);
 
 
         //----------------------- Testing -----------------------------
