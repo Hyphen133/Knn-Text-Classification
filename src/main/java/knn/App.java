@@ -11,6 +11,8 @@ import knn.preprocessing.LeaveOnlyCharactersAndSpacesRule;
 import knn.preprocessing.PreprocessingRule;
 import knn.preprocessing.WordSplitter;
 import knn.similarity.*;
+import knn.test_train_sets.TrainTestSets;
+import knn.test_train_sets.TrainTestSetsSplitter;
 
 import java.util.*;
 
@@ -49,20 +51,18 @@ public class App {
         texts = filteredTexts;
 
 
-        //------------------- Preprocessing ------------------------
-        ArrayList<String>[] processedTexts = new ArrayList[texts.length];
-        PreprocessingRule rule = new LeaveOnlyCharactersAndSpacesRule();
-        for (int i = 0; i < texts.length; i++) {
-            processedTexts[i] = new ArrayList<>();
-            for (String text : texts[i]) {
-                processedTexts[i].add(rule.applyTo(text));
-            }
-        }
 
-
-        String[] flattenedTexts = Utils.flatten(processedTexts, String.class);
+        String[] flattenedTexts = Utils.flatten(texts, String.class);
         String[] flattenedTags = Utils.flatten(tags, String.class);
 
+
+        //------------------- Preprocessing ------------------------
+        PreprocessingRule rule = new LeaveOnlyCharactersAndSpacesRule();
+        for (int i = 0; i < flattenedTags.length; i++) {
+            flattenedTexts[i] = rule.applyTo(flattenedTexts[i]);
+        }
+
+        //Each text is splitted in words and we get one-hot vector for each tag
         String[][] splittedTexts = WordSplitter.splitAllTextsBySpaces(flattenedTexts);
         int[][] tagVectors = ClassProcessing.convertTagsToVectorsWithSingleOne(flattenedTags,placesMap);
 
@@ -74,26 +74,31 @@ public class App {
         Map<String, Integer>[] wordVectors = featureExtraction.extractFeatures(splittedTexts);
         List<String> volcabulary = featureExtraction.getOrderedVocabulary();
 
+        short[][] featureVectors = ClassProcessing.convertFeaturesToVectors(wordVectors, volcabulary);
+
 
         //------------------------- Train-Test Sets ----------------------------
         int trainSize = 1000;
         int testSize = 600;
 
-        Map<String, Integer>[] testWordVectors = Arrays.copyOfRange(wordVectors, trainSize, trainSize+testSize);
-        int[][] testTagVectors = Arrays.copyOfRange(tagVectors, trainSize, trainSize + testSize);
-        wordVectors = Arrays.copyOfRange(wordVectors, 0, trainSize);
-        tagVectors = Arrays.copyOfRange(tagVectors, 0, trainSize);
+        TrainTestSets sets = TrainTestSetsSplitter.split(featureVectors,tagVectors,trainSize, testSize);
 
-        short[][] testFeatureVectors = ClassProcessing.convertFeaturesToVectors(testWordVectors, volcabulary);
-        short[][] featureVectors = ClassProcessing.convertFeaturesToVectors(wordVectors, volcabulary);
+        short[][] trainX = sets.getTrainX();
+        int[][] trainY = sets.getTrainY();
+        short[][] testX = sets.getTestX();
+        int[][] testY = sets.getTestY();
 
-        ClassificationAlgorithm classificationAlgorithm = new KNN(featureVectors,tagVectors, new EuclideanDistance(), 3);
+
+
+        //--------------------------   Classification --------------------------
+
+        ClassificationAlgorithm classificationAlgorithm = new KNN(trainX,trainY, new EuclideanDistance(), 3);
 
 
         //----------------------- Testing -----------------------------
         System.out.println("Testing");
-        List<ClassificationResult> testResults =  classificationAlgorithm.classify(testFeatureVectors);
-        System.out.println("Accuracy: " + EvaluationMetrics.calculateAccuracy(testResults,testTagVectors)*100 + "%");
+        List<ClassificationResult> testResults =  classificationAlgorithm.classify(testX);
+        System.out.println("Accuracy: " + EvaluationMetrics.calculateAccuracy(testResults,testY)*100 + "%");
 
 
         long estimatedTime = System.currentTimeMillis() - startTime;
