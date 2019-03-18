@@ -26,7 +26,7 @@ public class MostFrequentWordsLoader {
         try (BufferedReader br = new BufferedReader(new FileReader(absolutePath))) {
             String line;
             while ((line = br.readLine()) != null) {
-                wordSet.add(line.trim().toLowerCase());
+                wordSet.add(line.substring(3).toLowerCase());
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();

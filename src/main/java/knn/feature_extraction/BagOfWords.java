@@ -48,10 +48,6 @@ public class BagOfWords implements FeatureExtraction {
 
     }
 
-    @Override
-    public List<String> getOrderedVocabulary() {
-        return volcabulary;
-    }
 
 
 }

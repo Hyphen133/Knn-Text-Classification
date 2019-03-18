@@ -3,7 +3,8 @@ package knn;
 import knn.classification.*;
 import knn.feature_extraction.FeatureExtraction;
 import knn.feature_extraction.InversedBagOfWords;
-import knn.feature_extraction.NonFrequentBagOfWords;
+import knn.feature_extraction.FrequentWords;
+import knn.feature_extraction.VocabularyCreator;
 import knn.loading.MostFrequentWordsLoader;
 import knn.loading.PlacesTagsLoader;
 import knn.loading.ReutersLoader;
@@ -55,6 +56,11 @@ public class App {
         String[] flattenedTexts = Utils.flatten(texts, String.class);
         String[] flattenedTags = Utils.flatten(tags, String.class);
 
+        String[][] textss = WordSplitter.splitAllTextsBySpaces(flattenedTexts);
+        System.out.println(Arrays.toString(textss[0]));
+        System.out.println(Arrays.toString(textss[1]));
+
+
 
         //------------------- Preprocessing ------------------------
         PreprocessingRule rule = new LeaveOnlyCharactersAndSpacesRule();
@@ -68,18 +74,20 @@ public class App {
 
 
         //----------------------- Feature extraction --------------------------
-//        FeatureExtraction featureExtraction = new NonFrequentBagOfWords(MostFrequentWordsLoader.load());
+        FeatureExtraction featureExtraction1 = new FrequentWords(MostFrequentWordsLoader.load());
         FeatureExtraction featureExtraction = new InversedBagOfWords();
 
         Map<String, Integer>[] wordVectors = featureExtraction.extractFeatures(splittedTexts);
-        List<String> volcabulary = featureExtraction.getOrderedVocabulary();
+        wordVectors = Utils.multiplyFeatureMaps(wordVectors, featureExtraction1.extractFeatures(splittedTexts));
 
-        short[][] featureVectors = ClassProcessing.convertFeaturesToVectors(wordVectors, volcabulary);
+        List<String> vocabulary = VocabularyCreator.getVolcabulary(splittedTexts);
+
+        short[][] featureVectors = ClassProcessing.convertFeaturesToVectors(wordVectors, vocabulary);
 
 
         //------------------------- Train-Test Sets ----------------------------
         int trainSize = 1000;
-        int testSize = 600;
+        int testSize = 800;
 
         TrainTestSets sets = TrainTestSetsSplitter.split(featureVectors,tagVectors,trainSize, testSize);
 
@@ -88,6 +96,11 @@ public class App {
         short[][] testX = sets.getTestX();
         int[][] testY = sets.getTestY();
 
+
+
+        long estimatedTime = System.currentTimeMillis() - startTime;
+        System.out.println("Preprocessing time: " + estimatedTime/1000 + "s ");
+        startTime = System.currentTimeMillis();
 
 
         //--------------------------   Classification --------------------------
@@ -101,8 +114,8 @@ public class App {
         System.out.println("Accuracy: " + EvaluationMetrics.calculateAccuracy(testResults,testY)*100 + "%");
 
 
-        long estimatedTime = System.currentTimeMillis() - startTime;
-        System.out.println(estimatedTime/1000 + "s ");
+        estimatedTime = System.currentTimeMillis() - startTime;
+        System.out.println("Classsification time: " + estimatedTime/1000 + "s ");
     }
 
 }

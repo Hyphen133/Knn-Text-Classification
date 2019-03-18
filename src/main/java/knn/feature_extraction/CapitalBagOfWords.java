@@ -52,8 +52,4 @@ public class CapitalBagOfWords implements FeatureExtraction {
         return featureTextVectors;
     }
 
-    @Override
-    public List<String> getOrderedVocabulary() {
-        return vocabulary;
-    }
 }
