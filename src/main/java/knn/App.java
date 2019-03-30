@@ -1,10 +1,7 @@
 package knn;
 
 import knn.classification.*;
-import knn.feature_extraction.FeatureExtraction;
-import knn.feature_extraction.InversedBagOfWords;
-import knn.feature_extraction.FrequentWords;
-import knn.feature_extraction.VocabularyCreator;
+import knn.feature_extraction.*;
 import knn.loading.MostFrequentWordsLoader;
 import knn.loading.PlacesTagsLoader;
 import knn.loading.ReutersLoader;
@@ -56,31 +53,34 @@ public class App {
         String[] flattenedTexts = Utils.flatten(texts, String.class);
         String[] flattenedTags = Utils.flatten(tags, String.class);
 
-        String[][] textss = WordSplitter.splitAllTextsBySpaces(flattenedTexts);
-        System.out.println(Arrays.toString(textss[0]));
-        System.out.println(Arrays.toString(textss[1]));
-
 
 
         //------------------- Preprocessing ------------------------
         PreprocessingRule rule = new LeaveOnlyCharactersAndSpacesRule();
+        String[] processedTexts = new String[flattenedTags.length];
         for (int i = 0; i < flattenedTags.length; i++) {
-            flattenedTexts[i] = rule.applyTo(flattenedTexts[i]);
+            processedTexts[i] = rule.applyTo(flattenedTexts[i]);
         }
 
         //Each text is splitted in words and we get one-hot vector for each tag
-        String[][] splittedTexts = WordSplitter.splitAllTextsBySpaces(flattenedTexts);
+        String[][] splittedTexts = WordSplitter.splitAllTextsBySpaces(processedTexts);
         int[][] tagVectors = ClassProcessing.convertTagsToVectorsWithSingleOne(flattenedTags,placesMap);
 
 
         //----------------------- Feature extraction --------------------------
-        FeatureExtraction featureExtraction1 = new FrequentWords(MostFrequentWordsLoader.load());
+
+        List<String> vocabulary = VocabularyCreator.getVolcabulary(splittedTexts);
+
         FeatureExtraction featureExtraction = new InversedBagOfWords();
+        FeatureExtraction featureExtraction1 = new FrequentWords(MostFrequentWordsLoader.load());
+        FeatureExtraction featureExtraction2 = new CaptialMiddleSentenceWords(rule, 1000);
 
         Map<String, Integer>[] wordVectors = featureExtraction.extractFeatures(splittedTexts);
         wordVectors = Utils.multiplyFeatureMaps(wordVectors, featureExtraction1.extractFeatures(splittedTexts));
+        //Flattended text without preprocessing (with dots and captial numbers
+        wordVectors = Utils.combineFeatureMaps(wordVectors, featureExtraction2.extractFeatures(WordSplitter.splitAllTextsBySpaces(flattenedTexts)));
 
-        List<String> vocabulary = VocabularyCreator.getVolcabulary(splittedTexts);
+
 
         short[][] featureVectors = ClassProcessing.convertFeaturesToVectors(wordVectors, vocabulary);
 

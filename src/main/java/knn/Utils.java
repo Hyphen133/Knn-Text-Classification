@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.IntStream;
 
 import static java.util.Comparator.comparing;
@@ -130,5 +131,15 @@ public class Utils {
 
         return outputMap;
 
+    }
+
+    public static void measureFunctionTime(String functionName, Runnable f){
+        long startTime = System.currentTimeMillis();
+
+        f.run();
+
+        long endTime = System.currentTimeMillis();
+
+        System.out.println(functionName + " function took " + (endTime - startTime) + " milliseconds " + "[~" + (endTime - startTime + 500)/1000 + " seconds]");
     }
 }
