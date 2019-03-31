@@ -142,4 +142,10 @@ public class Utils {
 
         System.out.println(functionName + " function took " + (endTime - startTime) + " milliseconds " + "[~" + (endTime - startTime + 500)/1000 + " seconds]");
     }
+
+    public static void zeroColumn(float[][] vectors, int columnIndex){
+        for (int i = 0; i < vectors.length; i++) {
+            vectors[i][columnIndex] = 0;
+        }
+    }
 }

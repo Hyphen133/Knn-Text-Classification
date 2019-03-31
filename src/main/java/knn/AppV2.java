@@ -1,74 +1,117 @@
 package knn;
 
-import knn.loading.PlacesTagsLoader;
-import knn.loading.ReutersLoader;
-import knn.loadingV2.PlacesTagsLoaderV2;
-import knn.loadingV2.ReuterWithTag;
-import knn.loadingV2.ReutersLoaderV2;
-import knn.loadingV2.SplittedReuterWithTag;
+import knn.feature_extractionV2.*;
+import knn.loading.MostFrequentWordsLoader;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
-
-import static knn.Config.PARAGRAPH_SYMBOL;
 
 public class AppV2 {
     public static void main(String[] args) {
 
 
 
-        ArrayList<String> tags = PlacesTagsLoaderV2.loadPlacesTagsFromReutersDirectory();
-        ArrayList<String> texts = ReutersLoaderV2.load(false, true);
+//        ArrayList<String> tags = PlacesTagsLoaderV2.loadPlacesTagsFromReutersDirectory();
+//        ArrayList<String> texts = ReutersLoaderV2.load(false, true);
+//
+//        Utils.measureFunctionTime("Loading", () -> {
+//            ArrayList<String> tags1 = PlacesTagsLoaderV2.loadPlacesTagsFromReutersDirectory();
+//            ArrayList<String> texts1 = ReutersLoaderV2.load(false, true);
+//            System.out.println(texts1.size());
+//            System.out.println(tags1.size());
+////            System.out.println(tags1);
+//        });
+//
+//
+//        Utils.measureFunctionTime("Converting to class ", () -> {
+//            ArrayList<ReuterWithTag> reutersWithTags = new ArrayList<>();
+//            for (int i = 0; i < texts.size(); i++) {
+//                reutersWithTags.add(new ReuterWithTag(texts.get(i), tags.get(i)));
+//            }
+//        });
+//
+//
+//        ArrayList<ReuterWithTag> reutersWithTags = new ArrayList<>();
+//        for (int i = 0; i < texts.size(); i++) {
+//            reutersWithTags.add(new ReuterWithTag(texts.get(i), tags.get(i)));
+//        }
+//
+//
+//        Utils.measureFunctionTime("Filtering ", () -> {
+//            ArrayList<String> chosenTags = new ArrayList<>();
+//            chosenTags.addAll(Arrays.asList("west-germany", "usa", "france", "uk", "canada", "japan"));
+//
+//
+//            reutersWithTags.removeIf(x -> !chosenTags.contains(x.getTag()));
+//            System.out.println(reutersWithTags.size());
+//        });
+//
+//
+//
+//        Utils.measureFunctionTime("Splitting ", () -> {
+//            ArrayList<SplittedReuterWithTag> splittedReutersWithTags = new ArrayList<>();
+//            for (ReuterWithTag reutersWithTag : reutersWithTags) {
+//                    splittedReutersWithTags.add(new SplittedReuterWithTag(reutersWithTag.getText().replace("     ", PARAGRAPH_SYMBOL).split("\\s"), reutersWithTag.getTag()));
+//            }
+////            for (int i = 0; i < 10; i++) {
+////                System.out.println(reutersWithTags.get(i).getText());
+////                System.out.println(reutersWithTags.get(i).getText().replace("     ", " <<>> "));
+////                System.out.println(Arrays.toString(reutersWithTags.get(i).getText().replace("     ", " <<>> ").split("\\s")));
+////            }
+//        });
 
-        Utils.measureFunctionTime("Loading", () -> {
-            ArrayList<String> tags1 = PlacesTagsLoaderV2.loadPlacesTagsFromReutersDirectory();
-            ArrayList<String> texts1 = ReutersLoaderV2.load(false, true);
-            System.out.println(texts1.size());
-            System.out.println(tags1.size());
-//            System.out.println(tags1);
-        });
 
+        ArrayList<String[]> textTabs = new ArrayList<>();
+        textTabs.add(new String[]{"Hello", "I", "really", "like", "fishing", "colourful", "and", "enormous", "fishes" });
+        textTabs.add(new String[]{"the", "biggest" , "is", "really", "biggest", "out", "of", "all", "big", "fishes" });
 
-        Utils.measureFunctionTime("Converting to class ", () -> {
-            ArrayList<ReuterWithTag> reutersWithTags = new ArrayList<>();
-            for (int i = 0; i < texts.size(); i++) {
-                reutersWithTags.add(new ReuterWithTag(texts.get(i), tags.get(i)));
-            }
-        });
+        Preprocessing preprocessing = new LeaveOnlySpacesAndCharacters();
+        preprocessing.apply(textTabs);
 
-
-        ArrayList<ReuterWithTag> reutersWithTags = new ArrayList<>();
-        for (int i = 0; i < texts.size(); i++) {
-            reutersWithTags.add(new ReuterWithTag(texts.get(i), tags.get(i)));
+        for (String[] textTab : textTabs) {
+            System.out.println(Arrays.toString(textTab));
         }
 
+        VolcabularyReducing volcabularyReducing1 = new PorterStemming();
+        volcabularyReducing1.apply(textTabs);
 
-        Utils.measureFunctionTime("Filtering ", () -> {
-            ArrayList<String> chosenTags = new ArrayList<>();
-            chosenTags.addAll(Arrays.asList("west-germany", "usa", "france", "uk", "canada", "japan"));
+        for (String[] textTab : textTabs) {
+            System.out.println(Arrays.toString(textTab));
+        }
 
+        VolcabularyReducing volcabularyReducing2 = new StoplistRemoving(MostFrequentWordsLoader.load());
+        volcabularyReducing2.apply(textTabs);
 
-            reutersWithTags.removeIf(x -> !chosenTags.contains(x.getTag()));
-            System.out.println(reutersWithTags.size());
-        });
+        for (String[] textTab : textTabs) {
+            System.out.println(Arrays.toString(textTab));
+        }
 
+        CoocurrenceMapCreating coocurrenceMapCreating = new Unigram();
 
+        Map<String, Integer>[] coocurrenceMap = coocurrenceMapCreating.create(textTabs);
+        Map<String, Integer> dictonary = coocurrenceMapCreating.getDictonary(textTabs);
 
-        Utils.measureFunctionTime("Splitting ", () -> {
-            ArrayList<SplittedReuterWithTag> splittedReutersWithTags = new ArrayList<>();
-            for (ReuterWithTag reutersWithTag : reutersWithTags) {
-                    splittedReutersWithTags.add(new SplittedReuterWithTag(reutersWithTag.getText().replace("     ", PARAGRAPH_SYMBOL).split("\\s"), reutersWithTag.getTag()));
+        for (Map<String, Integer> stringIntegerMap : coocurrenceMap) {
+            for (Map.Entry<String, Integer> entry : stringIntegerMap.entrySet()) {
+                System.out.println("Key="+entry.getKey()+", Value="+entry.getValue());
             }
-//            for (int i = 0; i < 10; i++) {
-//                System.out.println(reutersWithTags.get(i).getText());
-//                System.out.println(reutersWithTags.get(i).getText().replace("     ", " <<>> "));
-//                System.out.println(Arrays.toString(reutersWithTags.get(i).getText().replace("     ", " <<>> ").split("\\s")));
-//            }
-        });
+            System.out.println();
+        }
 
+        RawVectorCreating rawVectorCreating = new RawVectorCreatingImpl();
 
+        float[][] vectors = rawVectorCreating.apply(coocurrenceMap, dictonary);
 
+        System.out.println(Arrays.deepToString(vectors));
+
+//        RawVectorProcessing rawVectorProcessing1 = new RemoveMoreThanOccurrencesInDocuments(1);
+//        rawVectorProcessing1.apply(vectors);
+//        System.out.println(Arrays.deepToString(vectors));
+
+        RawVectorProcessing rawVectorProcessing2 = new RemoveLessThanOccurrencesInDocuments(2);
+        rawVectorProcessing2.apply(vectors);
+        System.out.println(Arrays.deepToString(vectors));
 
     }
 }
