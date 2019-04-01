@@ -22,7 +22,11 @@ public class TdIdf implements RawVectorProcessing {
 
         for (int i = 0; i < rawVectors.length; i++) {
             for (int j = 0; j < rawVectors[0].length; j++) {
-                rawVectors[i][j] = (float) ((Math.log(documentsLength/idfCounts[j])) * (documentsLength/idfCounts[j]));
+                if(tfCounts[j] != 0 && idfCounts[j] !=0 ){ //TODO -> check if second part is necessary
+                    rawVectors[i][j] = (float) ((Math.log(documentsLength/idfCounts[j])) * (documentsLength/tfCounts[j]));
+                }else{
+                    rawVectors[i][j] = 0;
+                }
             }
         }
     }

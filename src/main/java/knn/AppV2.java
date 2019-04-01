@@ -109,9 +109,9 @@ public class AppV2 {
 //        rawVectorProcessing1.apply(vectors);
 //        System.out.println(Arrays.deepToString(vectors));
 
-//        RawVectorProcessing rawVectorProcessing2 = new RemoveLessThanOccurrencesInDocuments(2);
-//        rawVectorProcessing2.apply(vectors);
-//        System.out.println(Arrays.deepToString(vectors));
+        RawVectorProcessing rawVectorProcessing2 = new RemoveLessThanOccurrencesInDocuments(2);
+        rawVectorProcessing2.apply(vectors);
+        System.out.println(Arrays.deepToString(vectors));
 
         RawVectorProcessing rawVectorProcessing3 = new TdIdf();
         rawVectorProcessing3.apply(vectors);
