@@ -2,6 +2,8 @@ package knn;
 
 import knn.feature_extractionV2.*;
 import knn.loading.MostFrequentWordsLoader;
+import knn.loadingV2.PlacesTagsLoaderV2;
+import knn.loadingV2.ReutersLoaderV2;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -64,13 +66,47 @@ public class AppV2 {
 
 
         ArrayList<String[]> textTabs = new ArrayList<>();
-        textTabs.add(new String[]{"Hello", "I", "really", "like", "fishing", "colourful", "and", "enormous", "fishes" });
+        textTabs.add(new String[]{"Hello", "I", "really", "like", " ", "fishing", "colourful", "and", "enormous", "fishes" });
+        textTabs.add(new String[]{"Big", "of", "the", "biggest" , "is", "really", "Biggest", "out", "of", "all", "big", "fishes" });
+
+        List<Preprocessing> preprocessingList = new ArrayList<>();
+        preprocessingList.add(new LeaveOnlySpacesAndCharacters());
+
+
+        List<VocabularyReducing> vocabularyReducingList = new ArrayList<>();
+        vocabularyReducingList.add(new StoplistRemoving(MostFrequentWordsLoader.load()));
+        vocabularyReducingList.add(new PorterStemming());
+
+        CoocurrenceMapCreating coocurrenceMapCreating = new Unigram();
+
+        List<CoocurrenceMapProcessing> coocurrenceMapProcessingList = new ArrayList<>();
+        coocurrenceMapProcessingList.add(new CapitalWordInMiddleOfSentence());
+        coocurrenceMapProcessingList.add(new FirstParagraphExtractor());
+
+        RawVectorCreating rawVectorCreating = new RawVectorCreatingImpl();
+
+        List<RawVectorProcessing> rawVectorProcessingList = new ArrayList<>();
+//        rawVectorProcessingList.add(new TdIdf());
+
+        FeatureExtraction featureExtraction = new FeatureExtraction(preprocessingList,vocabularyReducingList, coocurrenceMapCreating, coocurrenceMapProcessingList, rawVectorCreating, rawVectorProcessingList);
+
+        float[][] featureVectors = featureExtraction.extractFeatures(textTabs);
+
+        System.out.println(Arrays.deepToString(featureVectors));
+
+    }
+
+    static void featureExtraction1(){
+        ArrayList<String[]> textTabs = new ArrayList<>();
+        textTabs.add(new String[]{"Hello", "I", "really", "like", " ", "fishing", "colourful", "and", "enormous", "fishes" });
         textTabs.add(new String[]{"Big", "of", "the", "biggest" , "is", "really", "Biggest", "out", "of", "all", "big", "fishes" });
 
 
         CoocurrenceMapProcessing coocurrenceMapProcessing1 = new CapitalWordInMiddleOfSentence();
+        CoocurrenceMapProcessing coocurrenceMapProcessing2 = new FirstParagraphExtractor();
 
         coocurrenceMapProcessing1.remember(textTabs);
+        coocurrenceMapProcessing2.remember(textTabs);
 
 
         List<Preprocessing> preprocessingList = new ArrayList<>();
@@ -113,7 +149,7 @@ public class AppV2 {
 
 
         coocurrenceMapProcessing1.apply(coocurrenceMap, preprocessingList, vocabularyReducingList);
-
+        coocurrenceMapProcessing2.apply(coocurrenceMap, preprocessingList, vocabularyReducingList);
 
 
         RawVectorCreating rawVectorCreating = new RawVectorCreatingImpl();
@@ -135,7 +171,5 @@ public class AppV2 {
         RawVectorProcessing rawVectorProcessing3 = new TdIdf();
         rawVectorProcessing3.apply(vectors);
         System.out.println(Arrays.deepToString(vectors));
-
-
     }
 }

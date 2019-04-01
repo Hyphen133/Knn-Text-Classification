@@ -27,8 +27,6 @@ public class CapitalWordInMiddleOfSentence implements CoocurrenceMapProcessing {
             if(currentText[0].length() != 0){
                 //Can start at 1
                 for (int j = 1; j < currentText.length; j++) {
-                    System.out.println(currentText[j].charAt(0));
-                    System.out.println(currentText[j-1].charAt(currentText[j-1].length()-1));
                     if(Character.isUpperCase(currentText[j].charAt(0)) && !(currentText[j-1].charAt(currentText[j-1].length()-1) == '.')){
                         textCapitalWords.add(currentText[j]);
                     }

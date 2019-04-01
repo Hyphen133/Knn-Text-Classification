@@ -4,15 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class ParagraphExtractor implements CoocurrenceMapProcessing {
+public class FirstParagraphExtractor implements CoocurrenceMapProcessing {
     ArrayList<String[]> paragraphs;
     int points;
 
-    public ParagraphExtractor() {
+    public FirstParagraphExtractor() {
         points = 1;
     }
 
-    public ParagraphExtractor(int points) {
+    public FirstParagraphExtractor(int points) {
         this.points = points;
     }
 
