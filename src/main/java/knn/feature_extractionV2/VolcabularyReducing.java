@@ -1,4 +1,7 @@
 package knn.feature_extractionV2;
 
-public interface VolcabularyReducing extends Preprocessing {
+import java.util.ArrayList;
+
+public interface VolcabularyReducing {
+    void apply(ArrayList<String[]> texts);
 }
