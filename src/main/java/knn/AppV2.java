@@ -90,7 +90,7 @@ public class AppV2 {
         CoocurrenceMapCreating coocurrenceMapCreating = new Unigram();
 
         Map<String, Integer>[] coocurrenceMap = coocurrenceMapCreating.create(textTabs);
-        Map<String, Integer> dictonary = coocurrenceMapCreating.getDictonary(textTabs);
+        Map<String, Integer> dictonary = coocurrenceMapCreating.getVocabulary(textTabs);
 
         for (Map<String, Integer> stringIntegerMap : coocurrenceMap) {
             for (Map.Entry<String, Integer> entry : stringIntegerMap.entrySet()) {

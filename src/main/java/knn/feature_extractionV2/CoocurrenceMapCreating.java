@@ -5,5 +5,5 @@ import java.util.Map;
 
 public interface CoocurrenceMapCreating {
     Map<String,Integer>[] create(ArrayList<String[]> texts);
-    Map<String,Integer> getDictonary(ArrayList<String[]> texts);
+    Map<String,Integer> getVocabulary(ArrayList<String[]> texts);
 }

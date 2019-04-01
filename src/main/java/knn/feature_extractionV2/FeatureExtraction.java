@@ -58,7 +58,7 @@ public class FeatureExtraction {
 
         //(4) Creating cooccurrence map
         Map<String, Integer>[] coocurrenceMap = coocurrenceMapCreatingMethod.create(texts);
-        Map<String,Integer> volcabulary = coocurrenceMapCreatingMethod.getDictonary(texts);
+        Map<String,Integer> volcabulary = coocurrenceMapCreatingMethod.getVocabulary(texts);
 
         //(5) Processing coocurrence map
         for (CoocurrenceMapProcessing coocurrenceMapProcessingFilter : coocurrenceMapProcessingFilters) {

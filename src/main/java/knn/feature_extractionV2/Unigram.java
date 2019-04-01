@@ -50,7 +50,7 @@ public class Unigram implements CoocurrenceMapCreating {
     }
 
     @Override
-    public Map<String, Integer> getDictonary(ArrayList<String[]> texts) {
+    public Map<String, Integer> getVocabulary(ArrayList<String[]> texts) {
         return vocabulary;
     }
 }
