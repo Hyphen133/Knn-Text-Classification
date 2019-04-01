@@ -4,7 +4,7 @@ import opennlp.tools.stemmer.PorterStemmer;
 
 import java.util.ArrayList;
 
-public class PorterStemming implements VolcabularyReducing {
+public class PorterStemming implements VocabularyReducing {
     @Override
     public void apply(ArrayList<String[]> texts) {
         PorterStemmer stemmer = new PorterStemmer();

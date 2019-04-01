@@ -5,6 +5,7 @@ import knn.loading.MostFrequentWordsLoader;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 public class AppV2 {
@@ -64,24 +65,35 @@ public class AppV2 {
 
         ArrayList<String[]> textTabs = new ArrayList<>();
         textTabs.add(new String[]{"Hello", "I", "really", "like", "fishing", "colourful", "and", "enormous", "fishes" });
-        textTabs.add(new String[]{"the", "biggest" , "is", "really", "biggest", "out", "of", "all", "big", "fishes" });
+        textTabs.add(new String[]{"Big", "of", "the", "biggest" , "is", "really", "Biggest", "out", "of", "all", "big", "fishes" });
 
+
+        CoocurrenceMapProcessing coocurrenceMapProcessing1 = new CapitalWordInMiddleOfSentence();
+
+        coocurrenceMapProcessing1.remember(textTabs);
+
+
+        List<Preprocessing> preprocessingList = new ArrayList<>();
         Preprocessing preprocessing = new LeaveOnlySpacesAndCharacters();
+        preprocessingList.add(preprocessing);
         preprocessing.apply(textTabs);
 
         for (String[] textTab : textTabs) {
             System.out.println(Arrays.toString(textTab));
         }
 
-        VolcabularyReducing volcabularyReducing1 = new PorterStemming();
-        volcabularyReducing1.apply(textTabs);
+        List<VocabularyReducing> vocabularyReducingList = new ArrayList<>();
+        VocabularyReducing vocabularyReducing1 = new PorterStemming();
+        vocabularyReducingList.add(vocabularyReducing1);
+        vocabularyReducing1.apply(textTabs);
 
         for (String[] textTab : textTabs) {
             System.out.println(Arrays.toString(textTab));
         }
 
-        VolcabularyReducing volcabularyReducing2 = new StoplistRemoving(MostFrequentWordsLoader.load());
-        volcabularyReducing2.apply(textTabs);
+        VocabularyReducing vocabularyReducing2 = new StoplistRemoving(MostFrequentWordsLoader.load());
+        vocabularyReducingList.add(vocabularyReducing2);
+        vocabularyReducing2.apply(textTabs);
 
         for (String[] textTab : textTabs) {
             System.out.println(Arrays.toString(textTab));
@@ -90,7 +102,7 @@ public class AppV2 {
         CoocurrenceMapCreating coocurrenceMapCreating = new Unigram();
 
         Map<String, Integer>[] coocurrenceMap = coocurrenceMapCreating.create(textTabs);
-        Map<String, Integer> dictonary = coocurrenceMapCreating.getVocabulary(textTabs);
+        Map<String, Integer> vocabulary = coocurrenceMapCreating.getVocabulary(textTabs);
 
         for (Map<String, Integer> stringIntegerMap : coocurrenceMap) {
             for (Map.Entry<String, Integer> entry : stringIntegerMap.entrySet()) {
@@ -99,9 +111,14 @@ public class AppV2 {
             System.out.println();
         }
 
+
+        coocurrenceMapProcessing1.apply(coocurrenceMap, preprocessingList, vocabularyReducingList);
+
+
+
         RawVectorCreating rawVectorCreating = new RawVectorCreatingImpl();
 
-        float[][] vectors = rawVectorCreating.apply(coocurrenceMap, dictonary);
+        float[][] vectors = rawVectorCreating.apply(coocurrenceMap, vocabulary);
 
         System.out.println(Arrays.deepToString(vectors));
 
@@ -112,6 +129,8 @@ public class AppV2 {
         RawVectorProcessing rawVectorProcessing2 = new RemoveLessThanOccurrencesInDocuments(2);
         rawVectorProcessing2.apply(vectors);
         System.out.println(Arrays.deepToString(vectors));
+
+
 
         RawVectorProcessing rawVectorProcessing3 = new TdIdf();
         rawVectorProcessing3.apply(vectors);

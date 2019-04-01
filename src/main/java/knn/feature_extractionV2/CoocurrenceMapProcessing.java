@@ -6,5 +6,5 @@ import java.util.Map;
 
 public interface CoocurrenceMapProcessing {
     void remember(ArrayList<String[]> texts);
-    void apply(Map<String, Integer>[] coocurrenceMap ,List<Preprocessing> preprocessingFilters, List<VolcabularyReducing> volcabularyReducingFilters);
+    void apply(Map<String, Integer>[] coocurrenceMap ,List<Preprocessing> preprocessingFilters, List<VocabularyReducing> vocabularyReducingFilters);
 }

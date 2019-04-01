@@ -3,7 +3,7 @@ package knn.feature_extractionV2;
 import java.util.ArrayList;
 import java.util.Set;
 
-public class StoplistRemoving implements VolcabularyReducing {
+public class StoplistRemoving implements VocabularyReducing {
     Set<String> frequentWords;
 
     public StoplistRemoving(Set<String> frequentWords) {

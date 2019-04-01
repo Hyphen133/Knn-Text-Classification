@@ -1,6 +1,5 @@
 package knn.feature_extractionV2;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +26,9 @@ public class CapitalWordInMiddleOfSentence implements CoocurrenceMapProcessing {
 
             if(currentText[0].length() != 0){
                 //Can start at 1
-                for (int j = 1; j < currentText[i].length(); j++) {
+                for (int j = 1; j < currentText.length; j++) {
+                    System.out.println(currentText[j].charAt(0));
+                    System.out.println(currentText[j-1].charAt(currentText[j-1].length()-1));
                     if(Character.isUpperCase(currentText[j].charAt(0)) && !(currentText[j-1].charAt(currentText[j-1].length()-1) == '.')){
                         textCapitalWords.add(currentText[j]);
                     }
@@ -36,16 +37,17 @@ public class CapitalWordInMiddleOfSentence implements CoocurrenceMapProcessing {
 
             capitalWords.add(textCapitalWords.toArray(new String[0]));
         }
+
     }
 
     @Override
-    public void apply(Map<String, Integer>[] coocurrenceMap, List<Preprocessing> preprocessingFilters, List<VolcabularyReducing> volcabularyReducingFilters) {
+    public void apply(Map<String, Integer>[] coocurrenceMap, List<Preprocessing> preprocessingFilters, List<VocabularyReducing> vocabularyReducingFilters) {
         //Apply all filters
         for (Preprocessing preprocessingFilter : preprocessingFilters) {
             preprocessingFilter.apply(capitalWords);
         }
-        for (VolcabularyReducing volcabularyReducingFilter : volcabularyReducingFilters) {
-            volcabularyReducingFilter.apply(capitalWords);
+        for (VocabularyReducing vocabularyReducingFilter : vocabularyReducingFilters) {
+            vocabularyReducingFilter.apply(capitalWords);
         }
 
         //Add to map

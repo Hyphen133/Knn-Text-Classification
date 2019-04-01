@@ -1,6 +1,5 @@
 package knn.feature_extractionV2;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -38,13 +37,13 @@ public class ParagraphExtractor implements CoocurrenceMapProcessing {
     }
 
     @Override
-    public void apply(Map<String, Integer>[] coocurrenceMap, List<Preprocessing> preprocessingFilters, List<VolcabularyReducing> volcabularyReducingFilters) {
+    public void apply(Map<String, Integer>[] coocurrenceMap, List<Preprocessing> preprocessingFilters, List<VocabularyReducing> vocabularyReducingFilters) {
         //Apply all filters
         for (Preprocessing preprocessingFilter : preprocessingFilters) {
             preprocessingFilter.apply(paragraphs);
         }
-        for (VolcabularyReducing volcabularyReducingFilter : volcabularyReducingFilters) {
-            volcabularyReducingFilter.apply(paragraphs);
+        for (VocabularyReducing vocabularyReducingFilter : vocabularyReducingFilters) {
+            vocabularyReducingFilter.apply(paragraphs);
         }
 
         //Add to map

@@ -6,13 +6,13 @@ import java.util.Map;
 
 public class FeatureExtraction {
     private List<Preprocessing> preprocesssingFilters;
-    private List<VolcabularyReducing> volcabularyReducingFilters;
+    private List<VocabularyReducing> vocabularyReducingFilters;
     private CoocurrenceMapCreating coocurrenceMapCreatingMethod;
     private List<CoocurrenceMapProcessing> coocurrenceMapProcessingFilters;
     private RawVectorCreating rawVectorCreating;
     private List<RawVectorProcessing> rawVectorProcessingMethods;
 
-    public FeatureExtraction(List<Preprocessing> preprocesssingFilters, List<VolcabularyReducing> volcabularyReducingFilters, CoocurrenceMapCreating coocurrenceMapCreatingMethod, List<CoocurrenceMapProcessing> coocurrenceMapProcessingFilters, RawVectorCreating rawVectorCreating, List<RawVectorProcessing> rawVectorProcessingMethods) {
+    public FeatureExtraction(List<Preprocessing> preprocesssingFilters, List<VocabularyReducing> vocabularyReducingFilters, CoocurrenceMapCreating coocurrenceMapCreatingMethod, List<CoocurrenceMapProcessing> coocurrenceMapProcessingFilters, RawVectorCreating rawVectorCreating, List<RawVectorProcessing> rawVectorProcessingMethods) {
         if(coocurrenceMapCreatingMethod == null){
             throw new IllegalArgumentException("Cocurrence Map creating method was not selected");
         }else if(rawVectorCreating == null){
@@ -21,8 +21,8 @@ public class FeatureExtraction {
         else if(preprocesssingFilters == null){
             preprocesssingFilters = new ArrayList<>();
         }
-        else if(volcabularyReducingFilters == null){
-            volcabularyReducingFilters = new ArrayList<>();
+        else if(vocabularyReducingFilters == null){
+            vocabularyReducingFilters = new ArrayList<>();
         }
         else if(coocurrenceMapProcessingFilters == null){
             coocurrenceMapProcessingFilters = new ArrayList<>();
@@ -32,7 +32,7 @@ public class FeatureExtraction {
         }
 
         this.preprocesssingFilters = preprocesssingFilters;
-        this.volcabularyReducingFilters = volcabularyReducingFilters;
+        this.vocabularyReducingFilters = vocabularyReducingFilters;
         this.coocurrenceMapCreatingMethod = coocurrenceMapCreatingMethod;
         this.coocurrenceMapProcessingFilters = coocurrenceMapProcessingFilters;
         this.rawVectorCreating = rawVectorCreating;
@@ -51,9 +51,9 @@ public class FeatureExtraction {
             preprocesssingFilter.apply(texts);
         }
 
-        //(3) Texts processing -> VolcabularyReducing filters
-        for (VolcabularyReducing volcabularyReducingFilter : volcabularyReducingFilters) {
-            volcabularyReducingFilter.apply(texts);
+        //(3) Texts processing -> VocabularyReducing filters
+        for (VocabularyReducing vocabularyReducingFilter : vocabularyReducingFilters) {
+            vocabularyReducingFilter.apply(texts);
         }
 
         //(4) Creating cooccurrence map
@@ -62,7 +62,7 @@ public class FeatureExtraction {
 
         //(5) Processing coocurrence map
         for (CoocurrenceMapProcessing coocurrenceMapProcessingFilter : coocurrenceMapProcessingFilters) {
-            coocurrenceMapProcessingFilter.apply(coocurrenceMap, preprocesssingFilters, volcabularyReducingFilters);
+            coocurrenceMapProcessingFilter.apply(coocurrenceMap, preprocesssingFilters, vocabularyReducingFilters);
         }
 
         //(6) Creating raw vectors
