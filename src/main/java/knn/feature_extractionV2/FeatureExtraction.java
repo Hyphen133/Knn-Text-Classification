@@ -60,9 +60,9 @@ public class FeatureExtraction {
         Map<String, Integer>[] coocurrenceMap = coocurrenceMapCreatingMethod.create(texts);
         Map<String,Integer> volcabulary = coocurrenceMapCreatingMethod.getVocabulary(texts);
 
-        for (String s : volcabulary.keySet()) {
-            System.out.println(volcabulary.get(s) + " " + s);
-        }
+//        for (String s : volcabulary.keySet()) {
+//            System.out.println(volcabulary.get(s) + " " + s);
+//        }
 
         //(5) Processing coocurrence map
         for (CoocurrenceMapProcessing coocurrenceMapProcessingFilter : coocurrenceMapProcessingFilters) {

@@ -2,8 +2,10 @@ package knn;
 
 import knn.feature_extractionV2.*;
 import knn.loading.MostFrequentWordsLoader;
+import knn.loadingV2.PlacesFilter;
 import knn.loadingV2.PlacesTagsLoaderV2;
 import knn.loadingV2.ReutersLoaderV2;
+import knn.loadingV2.TextsSplitter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,60 +17,20 @@ public class AppV2 {
 
 
 
-//        ArrayList<String> tags = PlacesTagsLoaderV2.loadPlacesTagsFromReutersDirectory();
-//        ArrayList<String> texts = ReutersLoaderV2.load(false, true);
-//
-//        Utils.measureFunctionTime("Loading", () -> {
-//            ArrayList<String> tags1 = PlacesTagsLoaderV2.loadPlacesTagsFromReutersDirectory();
-//            ArrayList<String> texts1 = ReutersLoaderV2.load(false, true);
-//            System.out.println(texts1.size());
-//            System.out.println(tags1.size());
-////            System.out.println(tags1);
-//        });
-//
-//
-//        Utils.measureFunctionTime("Converting to class ", () -> {
-//            ArrayList<ReuterWithTag> reutersWithTags = new ArrayList<>();
-//            for (int i = 0; i < texts.size(); i++) {
-//                reutersWithTags.add(new ReuterWithTag(texts.get(i), tags.get(i)));
-//            }
-//        });
-//
-//
-//        ArrayList<ReuterWithTag> reutersWithTags = new ArrayList<>();
-//        for (int i = 0; i < texts.size(); i++) {
-//            reutersWithTags.add(new ReuterWithTag(texts.get(i), tags.get(i)));
-//        }
-//
-//
-//        Utils.measureFunctionTime("Filtering ", () -> {
-//            ArrayList<String> chosenTags = new ArrayList<>();
-//            chosenTags.addAll(Arrays.asList("west-germany", "usa", "france", "uk", "canada", "japan"));
-//
-//
-//            reutersWithTags.removeIf(x -> !chosenTags.contains(x.getTag()));
-//            System.out.println(reutersWithTags.size());
-//        });
-//
-//
-//
-//        Utils.measureFunctionTime("Splitting ", () -> {
-//            ArrayList<SplittedReuterWithTag> splittedReutersWithTags = new ArrayList<>();
-//            for (ReuterWithTag reutersWithTag : reutersWithTags) {
-//                    splittedReutersWithTags.add(new SplittedReuterWithTag(reutersWithTag.getText().replace("     ", PARAGRAPH_SYMBOL).split("\\s"), reutersWithTag.getTag()));
-//            }
-////            for (int i = 0; i < 10; i++) {
-////                System.out.println(reutersWithTags.get(i).getText());
-////                System.out.println(reutersWithTags.get(i).getText().replace("     ", " <<>> "));
-////                System.out.println(Arrays.toString(reutersWithTags.get(i).getText().replace("     ", " <<>> ").split("\\s")));
-////            }
-//        });
+        ArrayList<String> loadedTags = PlacesTagsLoaderV2.loadPlacesTagsFromReutersDirectory();
+        ArrayList<String> loadedTexts = ReutersLoaderV2.load(false, true);
 
+        List<String> chosenPlaces = Arrays.asList("west-germany", "usa", "france", "uk", "canada", "japan");
+        PlacesFilter.filter(loadedTexts, loadedTags, chosenPlaces);
 
-        ArrayList<String[]> textTabs = new ArrayList<>();
-        textTabs.add(new String[]{"Hello", "I", "really", "like", " ", "fishing", "colourful", "and", "enormous", "fishes" });
-        textTabs.add(new String[]{"Big", "of", "the", "biggest" , "is", "really", "Biggest", "out", "of", "all", "big", "fishes" });
+        ArrayList<String[]> texts = TextsSplitter.split(loadedTexts);
+        ArrayList<String> tags = loadedTags;
 
+        float[][] textVector =  sampleFeatureExtraction(texts);
+
+    }
+
+    static float[][] sampleFeatureExtraction(ArrayList<String[]> texts){
         List<Preprocessing> preprocessingList = new ArrayList<>();
         preprocessingList.add(new LeaveOnlySpacesAndCharacters());
 
@@ -86,13 +48,23 @@ public class AppV2 {
         RawVectorCreating rawVectorCreating = new RawVectorCreatingImpl();
 
         List<RawVectorProcessing> rawVectorProcessingList = new ArrayList<>();
-//        rawVectorProcessingList.add(new TdIdf());
+        rawVectorProcessingList.add(new TdIdf());
 
         FeatureExtraction featureExtraction = new FeatureExtraction(preprocessingList,vocabularyReducingList, coocurrenceMapCreating, coocurrenceMapProcessingList, rawVectorCreating, rawVectorProcessingList);
 
-        float[][] featureVectors = featureExtraction.extractFeatures(textTabs);
+        return featureExtraction.extractFeatures(texts);
 
-        System.out.println(Arrays.deepToString(featureVectors));
+    }
+
+    static void loading(){
+        ArrayList<String> loadedTags = PlacesTagsLoaderV2.loadPlacesTagsFromReutersDirectory();
+        ArrayList<String> loadedTexts = ReutersLoaderV2.load(false, true);
+
+        List<String> chosenPlaces = Arrays.asList("west-germany", "usa", "france", "uk", "canada", "japan");
+        PlacesFilter.filter(loadedTexts, loadedTags, chosenPlaces);
+
+        ArrayList<String[]> texts = TextsSplitter.split(loadedTexts);
+        ArrayList<String> tags = loadedTags;
 
     }
 
@@ -171,5 +143,38 @@ public class AppV2 {
         RawVectorProcessing rawVectorProcessing3 = new TdIdf();
         rawVectorProcessing3.apply(vectors);
         System.out.println(Arrays.deepToString(vectors));
+    }
+
+
+    static void featureExtraction2(){
+        ArrayList<String[]> textTabs = new ArrayList<>();
+        textTabs.add(new String[]{"Hello", "I", "really", "like", " ", "fishing", "colourful", "and", "enormous", "fishes" });
+        textTabs.add(new String[]{"Big", "of", "the", "biggest" , "is", "really", "Biggest", "out", "of", "all", "big", "fishes" });
+
+        List<Preprocessing> preprocessingList = new ArrayList<>();
+        preprocessingList.add(new LeaveOnlySpacesAndCharacters());
+
+
+        List<VocabularyReducing> vocabularyReducingList = new ArrayList<>();
+        vocabularyReducingList.add(new StoplistRemoving(MostFrequentWordsLoader.load()));
+        vocabularyReducingList.add(new PorterStemming());
+
+        CoocurrenceMapCreating coocurrenceMapCreating = new Unigram();
+
+        List<CoocurrenceMapProcessing> coocurrenceMapProcessingList = new ArrayList<>();
+        coocurrenceMapProcessingList.add(new CapitalWordInMiddleOfSentence());
+        coocurrenceMapProcessingList.add(new FirstParagraphExtractor());
+
+        RawVectorCreating rawVectorCreating = new RawVectorCreatingImpl();
+
+        List<RawVectorProcessing> rawVectorProcessingList = new ArrayList<>();
+//        rawVectorProcessingList.add(new TdIdf());
+
+        FeatureExtraction featureExtraction = new FeatureExtraction(preprocessingList,vocabularyReducingList, coocurrenceMapCreating, coocurrenceMapProcessingList, rawVectorCreating, rawVectorProcessingList);
+
+        float[][] featureVectors = featureExtraction.extractFeatures(textTabs);
+
+        System.out.println(Arrays.deepToString(featureVectors));
+
     }
 }
