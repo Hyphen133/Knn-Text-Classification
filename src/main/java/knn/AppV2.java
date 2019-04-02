@@ -20,13 +20,21 @@ public class AppV2 {
         ArrayList<String> loadedTags = PlacesTagsLoaderV2.loadPlacesTagsFromReutersDirectory();
         ArrayList<String> loadedTexts = ReutersLoaderV2.load(false, true);
 
-        List<String> chosenPlaces = Arrays.asList("west-germany", "usa", "france", "uk", "canada", "japan");
-        PlacesFilter.filter(loadedTexts, loadedTags, chosenPlaces);
+        Utils.measureFunctionTime("F", ()->{
+            List<String> chosenPlaces = Arrays.asList("west-germany", "usa", "france", "uk", "canada", "japan");
+            PlacesFilter.filter(loadedTexts, loadedTags, chosenPlaces);
 
-        ArrayList<String[]> texts = TextsSplitter.split(loadedTexts);
-        ArrayList<String> tags = loadedTags;
+            ArrayList<String[]> texts = TextsSplitter.split(loadedTexts);
+            ArrayList<String> tags = loadedTags;
 
-        float[][] textVector =  sampleFeatureExtraction(texts);
+            float[][] textVector =  sampleFeatureExtraction(texts);
+            textVector = FeatureSelector.selectForEachCategory(textVector, tags, chosenPlaces, 2);
+            System.out.println(textVector.length);
+            System.out.println(textVector[0].length);
+        });
+
+
+
 
     }
 

@@ -25,6 +25,16 @@ public class Utils {
                 .toArray();
     }
 
+    public static int[] topN(final float[] input, final int n) {
+        return IntStream.range(0, input.length)
+                .boxed()
+                .sorted(comparing(i -> -input[i]))
+                .mapToInt(i -> i)
+                .limit(n)
+                .toArray();
+    }
+
+
     public static int[] elementwiseSameLengthVectorAdd(int[] v1, int[] v2) {
         if (v1.length != v2.length) {
             throw new IllegalArgumentException("Vectors have different length");
