@@ -23,7 +23,7 @@ public class FeatureSelector {
 
 
     private static float[][] selectFeatureVectors(float[][] vectors, ArrayList<Integer> columnIndexes){
-        float[][] selectedVectors = new float[vectors[0].length][columnIndexes.size()];
+        float[][] selectedVectors = new float[vectors.length][columnIndexes.size()];
 
 
         for (int i = 0; i < columnIndexes.size(); i++) {

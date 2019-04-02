@@ -1,12 +1,14 @@
 package knn;
 
-import knn.classificationV2.ClassProcessing;
+import knn.classificationV2.*;
 import knn.feature_extractionV2.*;
 import knn.loading.MostFrequentWordsLoader;
 import knn.loadingV2.PlacesFilter;
 import knn.loadingV2.PlacesTagsLoaderV2;
 import knn.loadingV2.ReutersLoaderV2;
 import knn.loadingV2.TextsSplitter;
+import knn.similarityV2.EuclideanDistance;
+import knn.similarityV2.SimilarityMeasure;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,7 +30,15 @@ public class AppV2 {
         textVectors = FeatureSelector.selectForEachCategory(textVectors, tags, chosenPlaces, 2);
         int[][] tagVectors = ClassProcessing.convertTagsToVectorsWithSingleOne(tags, chosenPlaces);
 
+        ColdStart coldStart = new RandomColdStart(2000);
+        SimilarityMeasure similarityMeasure = new EuclideanDistance();
+        ClassificationAlgorithm knn = new KNN(coldStart, similarityMeasure, 1);
 
+        ClassificationResults results = knn.classify(textVectors,tagVectors);
+
+        ConfusionMatrix confusionMatrix = ClassificationResultsProcessing.getConfusionMatrix(results);
+        System.out.println(confusionMatrix);
+        System.out.println("Accuracy: " + confusionMatrix.getAccurracy());
 
 
     }

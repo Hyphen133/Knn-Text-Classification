@@ -48,6 +48,20 @@ public class Utils {
         return out;
     }
 
+    public static int getIndexFromOneHotVector(int[] v) {
+
+        if (v == null || v.length == 0) return -1; // null or empty
+
+        for (int i = 0; i < v.length; i++) {
+            if(v[i] == 1){
+                return i;
+            }
+        }
+
+        throw new IllegalStateException("One hot vector is not one hot vector");
+
+    }
+
     public static int largestVectorElementIndex(int[] v) {
 
         if (v == null || v.length == 0) return -1; // null or empty
