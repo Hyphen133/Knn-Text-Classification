@@ -1,5 +1,6 @@
 package knn;
 
+import knn.classificationV2.ClassProcessing;
 import knn.feature_extractionV2.*;
 import knn.loading.MostFrequentWordsLoader;
 import knn.loadingV2.PlacesFilter;
@@ -14,24 +15,18 @@ import java.util.Map;
 
 public class AppV2 {
     public static void main(String[] args) {
-
-
-
         ArrayList<String> loadedTags = PlacesTagsLoaderV2.loadPlacesTagsFromReutersDirectory();
         ArrayList<String> loadedTexts = ReutersLoaderV2.load(false, true);
 
-        Utils.measureFunctionTime("F", ()->{
-            List<String> chosenPlaces = Arrays.asList("west-germany", "usa", "france", "uk", "canada", "japan");
-            PlacesFilter.filter(loadedTexts, loadedTags, chosenPlaces);
+        List<String> chosenPlaces = Arrays.asList("west-germany", "usa", "france", "uk", "canada", "japan");
+        PlacesFilter.filter(loadedTexts, loadedTags, chosenPlaces);
 
-            ArrayList<String[]> texts = TextsSplitter.split(loadedTexts);
-            ArrayList<String> tags = loadedTags;
+        ArrayList<String[]> texts = TextsSplitter.split(loadedTexts);
+        ArrayList<String> tags = loadedTags;
 
-            float[][] textVector =  sampleFeatureExtraction(texts);
-            textVector = FeatureSelector.selectForEachCategory(textVector, tags, chosenPlaces, 2);
-            System.out.println(textVector.length);
-            System.out.println(textVector[0].length);
-        });
+        float[][] textVectors =  sampleFeatureExtraction(texts);
+        textVectors = FeatureSelector.selectForEachCategory(textVectors, tags, chosenPlaces, 2);
+        int[][] tagVectors = ClassProcessing.convertTagsToVectorsWithSingleOne(tags, chosenPlaces);
 
 
 
