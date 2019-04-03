@@ -1,11 +1,9 @@
 package knn.classificationV2;
 
+import knn.Utils;
 import org.apache.commons.lang3.ArrayUtils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Random;
+import java.util.*;
 
 public class ColdStartFromEachCategory implements ColdStart{
     int count;
@@ -23,20 +21,43 @@ public class ColdStartFromEachCategory implements ColdStart{
 
         ColdStartSolution solution = new ColdStartSolution();
 
+
+        ArrayList<Integer>[] tagIndexesForEachTag = new ArrayList[tags[0].length];
         Random random = new Random();
-        for (int i = 0; i < count; i++) {
-            int randIndex = random.nextInt(vectors.length);
 
-            solution.getVectors().add(vectors[randIndex]);
-            solution.getTags().add(tags[randIndex]);
+        //Group indexes by tags
+        for (int i = 0; i < tags.length; i++) {
+            int index = Utils.getIndexFromOneHotVector(tags[i]);
+            tagIndexesForEachTag[index].add(i);
+        }
 
-            //Remove elements from testSet
-            ArrayUtils.removeElement(vectors, vectors[randIndex]);
-            ArrayUtils.removeElement(tags, tags[randIndex]);
+        ArrayList<Integer> selectedIndexes = new ArrayList<>();
+
+        //"count" indexes for each tag
+        for (int i = 0; i < tags[0].length; i++) {
+            for (int j = 0; j < count; j++) {
+                selectedIndexes.add(tagIndexesForEachTag[i].get(random.nextInt(tagIndexesForEachTag[i].size())));
+            }
+        }
+
+        //sort in descending order (!!no need to decrease indexes on looping for removal)
+        Collections.sort(selectedIndexes, Collections.reverseOrder());
+
+        ArrayList<float[]> vectorsList = new ArrayList<>();
+        ArrayList<int[]> tagsList = new ArrayList<>();
+
+        //Constructing cold start solution + Removing selected vectors and tags
+        for (int i = 0; i < selectedIndexes.size(); i++) {
+            vectorsList.add(vectors[selectedIndexes.get(i)]);
+            tagsList.add(tags[selectedIndexes.get(i)]);
+
+            //can remove cause of descending order of indexes
+            ArrayUtils.removeElement(vectors, selectedIndexes.get(i));
+            ArrayUtils.removeElement(tags, selectedIndexes.get(i));
+
         }
 
 
-
-        return null;
+        return new ColdStartSolution(vectorsList, tagsList);
     }
 }

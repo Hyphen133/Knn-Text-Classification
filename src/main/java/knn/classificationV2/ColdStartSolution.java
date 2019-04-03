@@ -11,6 +11,11 @@ public class ColdStartSolution {
         tags = new ArrayList<>();
     }
 
+    public ColdStartSolution(ArrayList<float[]> vectors, ArrayList<int[]> tags) {
+        this.vectors = vectors;
+        this.tags = tags;
+    }
+
     public ArrayList<float[]> getVectors() {
         return vectors;
     }

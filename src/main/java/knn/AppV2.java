@@ -59,9 +59,9 @@ public class AppV2 {
         textVectors = FeatureSelector.selectForEachCategory(textVectors, tags, chosenPlaces, 2);
         int[][] tagVectors = ClassProcessing.convertTagsToVectorsWithSingleOne(tags, chosenPlaces);
 
-        ColdStart coldStart = new RandomColdStart(1);
+        ColdStart coldStart = new RandomColdStart(200);
         SimilarityMeasure similarityMeasure = new EuclideanDistance();
-        ClassificationAlgorithm knn = new KNN(coldStart, similarityMeasure, 1);
+        ClassificationAlgorithm knn = new KNN(coldStart, similarityMeasure, 3);
 
         ClassificationResults results = knn.classify(textVectors,tagVectors);
 
