@@ -16,7 +16,7 @@ public class ClassificationResultsProcessing {
         //Rows are correct values
         //Columns are predicted values
         for (int i = 0; i < classifiedTags.size(); i++) {
-            matrix[Utils.getIndexFromOneHotVector(correctTags.get(i))][Utils.getIndexFromOneHotVector(classifiedTags.get(i))] += 1;
+            matrix[Utils.getIndexFromOneHotVector(classifiedTags.get(i))][Utils.getIndexFromOneHotVector(correctTags.get(i))] += 1;
         }
 
         return new ConfusionMatrix(matrix);

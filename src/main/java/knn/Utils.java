@@ -48,6 +48,19 @@ public class Utils {
         return out;
     }
 
+    public static float[] elementwiseSameLengthVectorSubtract(float[] v1, float[] v2) {
+        if (v1.length != v2.length) {
+            throw new IllegalArgumentException("Vectors have different length");
+        }
+
+        float[] out = new float[v1.length];
+        for (int i = 0; i < v1.length; i++) {
+            out[i] = v1[i] - v2[i];
+        }
+
+        return out;
+    }
+
     public static int getIndexFromOneHotVector(int[] v) {
 
         if (v == null || v.length == 0) return -1; // null or empty

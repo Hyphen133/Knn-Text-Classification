@@ -3,6 +3,8 @@ package knn.classificationV2;
 import java.util.Arrays;
 
 public class ConfusionMatrix {
+    //Columns are correct values
+    //Rows are predicted values
     int[][] matrix;
 
     public ConfusionMatrix(int[][] matrix) {
@@ -33,5 +35,45 @@ public class ConfusionMatrix {
         }
 
         return ((double)diagonalSum) / sum;
+    }
+
+    public double[] getPrecision(){
+        double[] precision = new double[matrix.length];
+        for (int i = 0; i < matrix.length; i++) {
+            double sum = 0;
+            for (int j = 0; j < matrix.length; j++) {
+                sum += matrix[j][i];
+            }
+            precision[i] = matrix[i][i] /sum;
+        }
+
+        return precision;
+    }
+
+
+    public double[] getRecall(){
+        double[] precision = new double[matrix.length];
+        for (int i = 0; i < matrix.length; i++) {
+            double sum = 0;
+            for (int j = 0; j < matrix.length; j++) {
+                sum += matrix[i][j];
+            }
+            precision[i] = matrix[i][i] / sum;
+        }
+
+        return precision;
+    }
+
+    public double[] getF1Score(){
+        double[] precision = getPrecision();
+        double[] recall = getRecall();
+
+        double[] f1 = new double[recall.length];
+
+        for (int i = 0; i < f1.length; i++) {
+            f1[i] = (precision[i] * recall[i])/(precision[i] + recall[i]);
+        }
+
+        return f1;
     }
 }

@@ -55,10 +55,13 @@ public class AppV2 {
 
 
 
+        FeatureSelector selector = new TagSpecificMeanSelector();
+
         float[][] textVectors =  featureExtraction.extractFeatures(texts);
-        textVectors = FeatureSelector.selectForEachCategory(textVectors, tags, chosenPlaces, 2);
+        textVectors = selector.selectForEachCategory(textVectors, tags, chosenPlaces, 2);
         int[][] tagVectors = ClassProcessing.convertTagsToVectorsWithSingleOne(tags, chosenPlaces);
 
+//        ColdStart coldStart = new ColdStartFromEachCategory(20);
         ColdStart coldStart = new RandomColdStart(200);
         SimilarityMeasure similarityMeasure = new EuclideanDistance();
         ClassificationAlgorithm knn = new KNN(coldStart, similarityMeasure, 3);

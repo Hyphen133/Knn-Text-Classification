@@ -25,6 +25,10 @@ public class ColdStartFromEachCategory implements ColdStart{
         ArrayList<Integer>[] tagIndexesForEachTag = new ArrayList[tags[0].length];
         Random random = new Random();
 
+        for (int i = 0; i < tagIndexesForEachTag.length; i++) {
+            tagIndexesForEachTag[i] = new ArrayList<>();
+        }
+
         //Group indexes by tags
         for (int i = 0; i < tags.length; i++) {
             int index = Utils.getIndexFromOneHotVector(tags[i]);
