@@ -26,11 +26,40 @@ public class AppV2 {
         ArrayList<String[]> texts = TextsSplitter.split(loadedTexts);
         ArrayList<String> tags = loadedTags;
 
-        float[][] textVectors =  sampleFeatureExtraction(texts);
+
+
+
+        List<Preprocessing> preprocessingList = new ArrayList<>();
+        preprocessingList.add(new LeaveOnlySpacesAndCharacters());
+
+
+        List<VocabularyReducing> vocabularyReducingList = new ArrayList<>();
+        vocabularyReducingList.add(new StoplistRemoving(MostFrequentWordsLoader.load()));
+        vocabularyReducingList.add(new PorterStemming());
+
+        CoocurrenceMapCreating coocurrenceMapCreating = new Unigram();
+
+        List<CoocurrenceMapProcessing> coocurrenceMapProcessingList = new ArrayList<>();
+        coocurrenceMapProcessingList.add(new CapitalWordInMiddleOfSentence());
+        coocurrenceMapProcessingList.add(new FirstParagraphExtractor());
+
+        RawVectorCreating rawVectorCreating = new RawVectorCreatingImpl();
+
+        List<RawVectorProcessing> rawVectorProcessingList = new ArrayList<>();
+//        rawVectorProcessingList.add(new RemoveMoreThanOccurrencesInDocuments(1000));
+//        rawVectorProcessingList.add(new RemoveLessThanOccurrencesInDocuments(2));
+        rawVectorProcessingList.add(new TdIdf());
+
+        FeatureExtraction featureExtraction = new FeatureExtraction(preprocessingList,vocabularyReducingList, coocurrenceMapCreating, coocurrenceMapProcessingList, rawVectorCreating, rawVectorProcessingList);
+
+
+
+
+        float[][] textVectors =  featureExtraction.extractFeatures(texts);
         textVectors = FeatureSelector.selectForEachCategory(textVectors, tags, chosenPlaces, 2);
         int[][] tagVectors = ClassProcessing.convertTagsToVectorsWithSingleOne(tags, chosenPlaces);
 
-        ColdStart coldStart = new RandomColdStart(2000);
+        ColdStart coldStart = new RandomColdStart(8);
         SimilarityMeasure similarityMeasure = new EuclideanDistance();
         ClassificationAlgorithm knn = new KNN(coldStart, similarityMeasure, 1);
 
@@ -40,6 +69,35 @@ public class AppV2 {
         System.out.println(confusionMatrix);
         System.out.println("Accuracy: " + confusionMatrix.getAccurracy());
 
+
+    }
+
+
+    static float[][] sampleFeatureExtractionSelection(ArrayList<String[]> texts){
+        List<Preprocessing> preprocessingList = new ArrayList<>();
+        preprocessingList.add(new LeaveOnlySpacesAndCharacters());
+
+
+        List<VocabularyReducing> vocabularyReducingList = new ArrayList<>();
+        vocabularyReducingList.add(new StoplistRemoving(MostFrequentWordsLoader.load()));
+        vocabularyReducingList.add(new PorterStemming());
+
+        CoocurrenceMapCreating coocurrenceMapCreating = new Unigram();
+
+        List<CoocurrenceMapProcessing> coocurrenceMapProcessingList = new ArrayList<>();
+        coocurrenceMapProcessingList.add(new CapitalWordInMiddleOfSentence());
+        coocurrenceMapProcessingList.add(new FirstParagraphExtractor());
+
+        RawVectorCreating rawVectorCreating = new RawVectorCreatingImpl();
+
+        List<RawVectorProcessing> rawVectorProcessingList = new ArrayList<>();
+//        rawVectorProcessingList.add(new RemoveMoreThanOccurrencesInDocuments(1000));
+//        rawVectorProcessingList.add(new RemoveLessThanOccurrencesInDocuments(2));
+        rawVectorProcessingList.add(new TdIdf());
+
+        FeatureExtraction featureExtraction = new FeatureExtraction(preprocessingList,vocabularyReducingList, coocurrenceMapCreating, coocurrenceMapProcessingList, rawVectorCreating, rawVectorProcessingList);
+
+        return featureExtraction.extractFeatures(texts);
 
     }
 
@@ -61,6 +119,8 @@ public class AppV2 {
         RawVectorCreating rawVectorCreating = new RawVectorCreatingImpl();
 
         List<RawVectorProcessing> rawVectorProcessingList = new ArrayList<>();
+//        rawVectorProcessingList.add(new RemoveMoreThanOccurrencesInDocuments(1000));
+//        rawVectorProcessingList.add(new RemoveLessThanOccurrencesInDocuments(2));
         rawVectorProcessingList.add(new TdIdf());
 
         FeatureExtraction featureExtraction = new FeatureExtraction(preprocessingList,vocabularyReducingList, coocurrenceMapCreating, coocurrenceMapProcessingList, rawVectorCreating, rawVectorProcessingList);

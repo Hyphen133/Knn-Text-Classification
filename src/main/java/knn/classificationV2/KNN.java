@@ -24,6 +24,7 @@ public class KNN implements ClassificationAlgorithm {
         ColdStartSolution coldStartSolution = coldStart.process(vectors,tags);
         ArrayList<float[]> classifiedVectors = coldStartSolution.getVectors();
         ArrayList<int[]> correctTags = coldStartSolution.getTags();
+
         int coldStartSize = classifiedVectors.size();
 
         //Classification
