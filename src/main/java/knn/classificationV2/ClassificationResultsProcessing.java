@@ -10,6 +10,7 @@ public class ClassificationResultsProcessing {
         ArrayList<int[]> classifiedTags = results.getClassifiedTags();
         ArrayList<int[]> correctTags = results.getTags();
 
+
         int[][] matrix = new int[correctTags.get(0).length][correctTags.get(0).length];
 
         //Rows are correct values

@@ -24,11 +24,12 @@ public class KNN implements ClassificationAlgorithm {
         ColdStartSolution coldStartSolution = coldStart.process(vectors,tags);
         ArrayList<float[]> classifiedVectors = coldStartSolution.getVectors();
         ArrayList<int[]> correctTags = coldStartSolution.getTags();
+        ArrayList<int[]> classifiedTags = new ArrayList<>();
+        classifiedTags.addAll(correctTags);
 
         int coldStartSize = classifiedVectors.size();
 
         //Classification
-        ArrayList<int[]> classifiedTags = new ArrayList<>();
         for (int i = 0; i < vectors.length; i++) {
             //Calculate table of similarities
             double[] similiarityTable = new double[classifiedVectors.size()];
@@ -41,8 +42,8 @@ public class KNN implements ClassificationAlgorithm {
             int[] bottomIndexes = Utils.bottomN(similiarityTable, k);
 
             int[] classCounts = new int[tags[0].length];
-            for (int j = 0; j < bottomIndexes.length; j++) {
-                classCounts = Utils.elementwiseSameLengthVectorAdd(classCounts, correctTags.get(bottomIndexes[j]));
+            for (int j = 0; j < k; j++) {
+                classCounts = Utils.elementwiseSameLengthVectorAdd(classCounts, classifiedTags.get(bottomIndexes[j]));
             }
             //Get class of more occurences
             int[] outClass = new int[tags[0].length];
@@ -59,6 +60,7 @@ public class KNN implements ClassificationAlgorithm {
         for (int i = 0; i < coldStartSize; i++) {
             classifiedVectors.remove(0);
             correctTags.remove(0);
+            classifiedTags.remove(0);
         }
 
         return new ClassificationResults(classifiedVectors,correctTags, classifiedTags );
